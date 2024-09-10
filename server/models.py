@@ -14,15 +14,15 @@ class User(db.Model, SerializerMixin):
     last_name = db.Column(db.String, nullable=False)
     _password_hash = db.Column(db.String, nullable=False)
 
-    #posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
-    #comments = db.relationship('Comment', back_populates='user', cascade='all, delete-orphan')
-    #likes = db.relationship('Like', back_populates='user', cascade='all, delete-orphan')
-    #threads_received = db.relationship('Thread', back_populates='thread_receiver', cascade='all, delete-orphan')
-    #messages = db.relationship('Message', back_populates='user', cascade='all, delete-orphan')
+    posts = db.relationship('Post', back_populates='user', cascade='all, delete-orphan')
+    comments = db.relationship('Comment', back_populates='user', cascade='all, delete-orphan')
+    likes = db.relationship('Like', back_populates='user', cascade='all, delete-orphan')
+    messages = db.relationship('Message', back_populates='user', cascade='all, delete-orphan')
 
-    #threads_created = association_proxy('messages', 'thread', creator=lambda thread_obj: Message(thread=thread_obj))
+    threads_received = db.relationship('Thread', back_populates='thread_receiver', cascade='all, delete-orphan')
+    threads_created = association_proxy('messages', 'thread', creator=lambda thread_obj: Message(thread=thread_obj))
 
-    #liked_posts = association_proxy('likes', 'post', creator=lambda post_obj: Like(post=post_obj))
+    liked_posts = association_proxy('likes', 'post', creator=lambda post_obj: Like(post=post_obj))
 
     @hybrid_property
     def password_hash(self):
@@ -55,13 +55,13 @@ class Post(db.Model, SerializerMixin):
     ttrpg = db.Column(db.String, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    #user = db.relationship('User', back_populates='posts')
-    #comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
+    user = db.relationship('User', back_populates='posts')
+    comments = db.relationship('Comment', back_populates='post', cascade='all, delete-orphan')
 
-    #likes = db.relationship('Like', back_populates='post', cascade='all, delete-orphan')
+    likes = db.relationship('Like', back_populates='post', cascade='all, delete-orphan')
 
-    #liked_users = association_proxy('likes', 'user', 
-                                    #creator=lambda user_obj: Like(user=user_obj))
+    liked_users = association_proxy('likes', 'user', 
+                                    creator=lambda user_obj: Like(user=user_obj))
 
     @validates('players_need', 'players_have')
     def validate_players_count(self, key, players):
@@ -79,9 +79,9 @@ class Comment(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
-    #user = db.relationship('User', back_populates='comments')
+    user = db.relationship('User', back_populates='comments')
 
-    #post = db.relationship('Post', back_populates='comments')
+    post = db.relationship('Post', back_populates='comments')
 
     def __repr__(self): return f'<Comment {self.id}: {self.body}>'
 
@@ -94,8 +94,8 @@ class Like(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
-    #user = db.relationship('User', back_populates='likes')
-    #post = db.relationship('Post', back_populates='likes')
+    user = db.relationship('User', back_populates='likes')
+    post = db.relationship('Post', back_populates='likes')
  
     def __repr__(self):
         return f'<Like {self.id}:  Heart Color: {self.heart_color} by {self.user.username} on Listing: {self.post.title}>'
@@ -106,24 +106,26 @@ class Thread(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     thread_receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    #thread_receiver = db.relationship('User', back_populates="threads_received")
+    thread_receiver = db.relationship('User', back_populates="threads_received")
 
-    #thread_creator = association_proxy('messages', 'user', creator=lambda user_obj: Message(user=user_obj))
+    thread_creator = association_proxy('messages', 'user', creator=lambda user_obj: Message(user=user_obj))
 
+    messages = db.relationship('Message', back_populates='thread', cascade='all, delete-orphan')
 
-    #messages = db.relationship('Message', back_populates='thread', cascade='all, delete-orphan')
-
-
-    def __repr__(self): f'<Thread {self.id} between {self.thread_creator} and {self.thread_receiver}>'
+    def __repr__(self): 
+        return f'<Thread {self.id} between {self.thread_creator} and {self.thread_receiver}>'
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
 
     id = db.Column(db.Integer, primary_key=True)
-    thread_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    thread_id = db.Column(db.Integer, db.ForeignKey('threads.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     body = db.Column(db.String, nullable=False)
 
-    #user = db.relationship('User', back_populates='messages')
-    #thread = db.relationship('Thread', back_populates='messages')
+    user = db.relationship('User', back_populates='messages')
+    thread = db.relationship('Thread', back_populates='messages')
+
+    def __repr__(self): 
+        return f'<Message {self.id} from {self.user.username}'
 

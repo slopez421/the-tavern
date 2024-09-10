@@ -84,25 +84,27 @@ if __name__ == '__main__':
 
         print("Creating threads and messages...")
         threads = []
-        messages_created = []
+        messages = []
 
         for i in range(10):
             thread = Thread()
+            thread.thread_receiver = rc(users)
             threads.append(thread)
-            thread_receiver_id = randint(1, 10)
-            threads.append(thread)
+            message = Message()
+            message.body = fake.sentence()
+            message.thread = thread
+            message.user = thread.thread_receiver
 
         db.session.add_all(threads)
         db.session.commit()
         
-        messages_received = []
         for i in range(10):
             message = Message()
             message.body = fake.sentence()
-            message.thread_id = randint(1, 10)
+            message.thread = rc(threads)
             message.user_id = randint(1, 10)
-            messages_received.append(message)
+            messages.append(message)
         
-        db.session.add_all(messages_received)
+        db.session.add_all(messages)
         db.session.commit()
         print("Complete.")
