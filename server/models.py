@@ -7,6 +7,8 @@ from config import db, bcrypt
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
+    
+    serialize_rules = ('-posts.user', '-comments.user', '-likes.user', '-_password_hash', '-messages.user',)
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
@@ -44,6 +46,8 @@ class User(db.Model, SerializerMixin):
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
 
+    serialize_rules = ('-user.posts', '-comments.post', '-likes.post', '-liked_users.liked_posts',)
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     body = db.Column(db.String, nullable=False)
@@ -74,6 +78,9 @@ class Post(db.Model, SerializerMixin):
 class Comment(db.Model, SerializerMixin):
     __tablename__ = 'comments'
 
+    serialize_only = ('body', 'id','listing_id',)
+
+
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -87,6 +94,8 @@ class Comment(db.Model, SerializerMixin):
 
 class Like(db.Model, SerializerMixin):
     __tablename__ = 'likes'
+
+    serialize_only = ('heart_color', 'user_id', 'id',)
     
     id = db.Column(db.Integer, primary_key=True)
     heart_color = db.Column(db.String)
@@ -103,12 +112,11 @@ class Like(db.Model, SerializerMixin):
 class Thread(db.Model, SerializerMixin):
     __tablename__ = 'threads'
 
+    serialize_rules = ('-messages.thread',)
+
     id = db.Column(db.Integer, primary_key=True)
     thread_creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     thread_receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    #thread_creator = db.relationship('User', back_populates="threads_created")
-    #thread_receiver = db.relationship('User', back_populates="threads_received")
 
     messages = db.relationship('Message', back_populates='thread', cascade='all, delete-orphan')
 
@@ -117,6 +125,7 @@ class Thread(db.Model, SerializerMixin):
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
+    serialize_rules = ('-user.messages', '-thread.messages',)
 
     id = db.Column(db.Integer, primary_key=True)
     thread_id = db.Column(db.Integer, db.ForeignKey('threads.id'))
