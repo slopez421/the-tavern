@@ -86,24 +86,35 @@ if __name__ == '__main__':
         threads = []
         messages = []
 
-        for i in range(10):
+        for i in range(5):
             thread = Thread()
-            thread.thread_receiver = rc(users)
+            thread.thread_creator_id = (i+1)
+            thread.thread_receiver_id = (i+6)
             threads.append(thread)
-            message = Message()
-            message.body = fake.sentence()
-            message.thread = thread
-            message.user = thread.thread_receiver
 
-        db.session.add_all(threads)
-        db.session.commit()
-        
-        for i in range(10):
+        db.session.add_all(threads) 
+
+        for i in range(5):
             message = Message()
             message.body = fake.sentence()
-            message.thread = rc(threads)
-            message.user_id = randint(1, 10)
+            message.thread_id = (i+1)
+            message.user_id = (i+1)
             messages.append(message)
+        
+        for i in range(5):
+            message = Message()
+            message.body = fake.sentence()
+            message.thread_id = (i+1)
+            message.user_id = (i+6)
+            messages.append(message)
+
+        for i in range(5):
+            message = Message()
+            message.body = fake.sentence()
+            message.thread_id = (i+1)
+            message.user_id = (i+1)
+            messages.append(message)
+
         
         db.session.add_all(messages)
         db.session.commit()

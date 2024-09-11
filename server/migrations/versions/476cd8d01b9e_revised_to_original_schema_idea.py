@@ -1,8 +1,8 @@
-"""table wont create
+"""revised to original schema idea
 
-Revision ID: 6562fe8bf931
-Revises: f2b2679e91fc
-Create Date: 2024-09-09 20:55:31.923166
+Revision ID: 476cd8d01b9e
+Revises: efaa113d34f4
+Create Date: 2024-09-10 20:23:13.816385
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6562fe8bf931'
-down_revision = 'f2b2679e91fc'
+revision = '476cd8d01b9e'
+down_revision = 'efaa113d34f4'
 branch_labels = None
 depends_on = None
 

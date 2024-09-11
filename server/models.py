@@ -19,8 +19,8 @@ class User(db.Model, SerializerMixin):
     likes = db.relationship('Like', back_populates='user', cascade='all, delete-orphan')
     messages = db.relationship('Message', back_populates='user', cascade='all, delete-orphan')
 
-    threads_received = db.relationship('Thread', back_populates='thread_receiver', cascade='all, delete-orphan')
-    threads_created = association_proxy('messages', 'thread', creator=lambda thread_obj: Message(thread=thread_obj))
+    threads_created = db.relationship('Thread', backref='thread_creator', foreign_keys='Thread.thread_creator_id', cascade='all, delete-orphan', lazy='dynamic')
+    threads_received = db.relationship('Thread', backref='thread_receiver', foreign_keys='Thread.thread_receiver_id', cascade='all, delete-orphan', lazy='dynamic')
 
     liked_posts = association_proxy('likes', 'post', creator=lambda post_obj: Like(post=post_obj))
 
@@ -104,16 +104,16 @@ class Thread(db.Model, SerializerMixin):
     __tablename__ = 'threads'
 
     id = db.Column(db.Integer, primary_key=True)
+    thread_creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     thread_receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    thread_receiver = db.relationship('User', back_populates="threads_received")
-
-    thread_creator = association_proxy('messages', 'user', creator=lambda user_obj: Message(user=user_obj))
+    #thread_creator = db.relationship('User', back_populates="threads_created")
+    #thread_receiver = db.relationship('User', back_populates="threads_received")
 
     messages = db.relationship('Message', back_populates='thread', cascade='all, delete-orphan')
 
     def __repr__(self): 
-        return f'<Thread {self.id} between {self.thread_creator} and {self.thread_receiver}>'
+        return f'<Thread {self.id} between {self.thread_creator_id} and {self.thread_receiver_id} created by: {self.thread_creator}>'
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
