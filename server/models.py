@@ -8,8 +8,7 @@ from config import db, bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     
-    serialize_rules = ('-posts.user', '-comments.user', '-likes.user', '-_password_hash', '-messages.user',)
-
+    serialize_only = ('id', 'username', 'first_name', 'last_name', 'comments', 'likes', 'messages',)
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
     first_name = db.Column(db.String, nullable=False)
@@ -46,7 +45,7 @@ class User(db.Model, SerializerMixin):
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
 
-    serialize_rules = ('-user.posts', '-comments.post', '-likes.post', '-liked_users.liked_posts',)
+    serialize_rules = ('-user', '-liked_users',)
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
@@ -78,7 +77,7 @@ class Post(db.Model, SerializerMixin):
 class Comment(db.Model, SerializerMixin):
     __tablename__ = 'comments'
 
-    serialize_only = ('body', 'id','listing_id',)
+    serialize_only = ('body', 'id','post_id','user_id',)
 
 
     id = db.Column(db.Integer, primary_key=True)
@@ -95,7 +94,7 @@ class Comment(db.Model, SerializerMixin):
 class Like(db.Model, SerializerMixin):
     __tablename__ = 'likes'
 
-    serialize_only = ('heart_color', 'user_id', 'id',)
+    serialize_only = ('id', 'heart_color', 'user_id', 'post_id',)
     
     id = db.Column(db.Integer, primary_key=True)
     heart_color = db.Column(db.String)
@@ -105,7 +104,7 @@ class Like(db.Model, SerializerMixin):
 
     user = db.relationship('User', back_populates='likes')
     post = db.relationship('Post', back_populates='likes')
- 
+
     def __repr__(self):
         return f'<Like {self.id}:  Heart Color: {self.heart_color} by {self.user.username} on Listing: {self.post.title}>'
 
@@ -121,11 +120,11 @@ class Thread(db.Model, SerializerMixin):
     messages = db.relationship('Message', back_populates='thread', cascade='all, delete-orphan')
 
     def __repr__(self): 
-        return f'<Thread {self.id} between {self.thread_creator_id} and {self.thread_receiver_id} created by: {self.thread_creator}>'
+        return f'<Thread {self.id} between {self.thread_creator_id} and {self.thread_receiver_id}>'
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
-    serialize_rules = ('-user.messages', '-thread.messages',)
+    serialize_rules = ('-user.messages',)
 
     id = db.Column(db.Integer, primary_key=True)
     thread_id = db.Column(db.Integer, db.ForeignKey('threads.id'))
@@ -137,4 +136,3 @@ class Message(db.Model, SerializerMixin):
 
     def __repr__(self): 
         return f'<Message {self.id} from {self.user.username}'
-
