@@ -45,7 +45,7 @@ class User(db.Model, SerializerMixin):
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
 
-    serialize_rules = ('-user', '-liked_users',)
+    serialize_only = ('id', 'title', 'body', 'preferred_weekday', 'preferred_time', 'players_have', 'players_need', 'ttrpg', 'user_id', 'likes', 'comments', 'user.username',)
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
