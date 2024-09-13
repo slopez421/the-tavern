@@ -8,7 +8,8 @@ from config import db, bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     
-    serialize_only = ('id', 'username', 'first_name', 'last_name', 'comments', 'likes', 'messages',)
+    serialize_only = ('id', 'username', 'first_name', 'last_name', 'likes',)
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
     first_name = db.Column(db.String, nullable=False)
@@ -111,7 +112,7 @@ class Like(db.Model, SerializerMixin):
 class Thread(db.Model, SerializerMixin):
     __tablename__ = 'threads'
 
-    serialize_rules = ('-messages.thread',)
+    serialize_only = ('messages', 'id', 'thread_creator_id', 'thread_receiver_id', 'thread_creator.username', 'thread_receiver.username',)
 
     id = db.Column(db.Integer, primary_key=True)
     thread_creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -124,7 +125,7 @@ class Thread(db.Model, SerializerMixin):
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
-    serialize_rules = ('-user.messages',)
+    serialize_only = ('id', 'thread_id', 'user_id', 'body', 'thread.thread_creator_id',)
 
     id = db.Column(db.Integer, primary_key=True)
     thread_id = db.Column(db.Integer, db.ForeignKey('threads.id'))
