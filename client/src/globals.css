@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.account {
+  margin: auto;
+}
+
+.main-container {
+  width: 60rem;
+  margin: auto;
+}
+
+.filter-menu {
+  width: 20rem
+}
