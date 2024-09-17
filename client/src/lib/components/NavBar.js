@@ -13,7 +13,8 @@ function NavBar() {
     } */
 
  return (
-    <nav>
+    <nav className="shadow">
+      <div className="main-container">
       <div className="navbar bg-base-100">
         <div className="navbar-start">
             <NavLink className="btn btn-ghost text-xl" to="/">The Tavern</NavLink>
@@ -45,6 +46,7 @@ function NavBar() {
                 </ul>
             </div>
   </div>
+</div>
 </div>
 </nav>)
 }

@@ -46,7 +46,7 @@ function PostPreview({post}) {
     //     }
     
     
-    return <div className="card-compact w-xl max-w-sm shrink-0 shadow-2xl rounded-box bg-primary text-primary-content w-96 ml mt-10">
+    return <div className="card-compact shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
             <div className="card-body">
             <h3>Username: {user_id}</h3>
                 <h2 className="card-title">{title}</h2>

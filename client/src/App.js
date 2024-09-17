@@ -6,9 +6,9 @@ import Home from "./lib/components/Home";
 function App() {
 
   return <div>
-    <div className="main-container">
+    <div>
     <NavBar/>
-    <div className="container">
+    <div className="main-container">
     <Routes>
       <Route path="/" element={<Home />}>
       </Route>

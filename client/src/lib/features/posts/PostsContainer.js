@@ -5,10 +5,9 @@ import PostPreview from "./PostPreview";
 function PostsContainer() {
 const posts = useAppSelector(state => state.posts)
     return <div>
-                <hr />
-                <div className="flex flex-wrap-reverse flex-none">
+                <div className="flex flex-wrap-reverse">
                     {posts.map((post) => 
-                    <PostPreview key={post.id} post={post} className="basis-1/4" />)}
+                    <PostPreview key={post.id} post={post} />)}
                 </div>
         
             </div>

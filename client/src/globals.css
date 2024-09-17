@@ -12,5 +12,18 @@
 }
 
 .filter-menu {
-  width: 20rem
+  width: 15rem;
+  margin: auto;
+}
+
+.home-stats {
+  width: 15rem;
+  margin-left: 0%;
+}
+
+.posts-containers {
+  margin: auto;
+  width: 30rem;
+  justify-content: center;
+  align-items: center;
 }
