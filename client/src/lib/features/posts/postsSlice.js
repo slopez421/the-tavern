@@ -38,7 +38,7 @@ const postsSlice = createSlice({
         }
     },
     selectors: {
-        selectAllPosts: postsState => postsState
+        selectAllPosts: postsState => postsState,
       }
 })
 
