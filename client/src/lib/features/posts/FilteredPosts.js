@@ -1,10 +1,13 @@
 import React from "react";
 import { useAppSelector } from "../../hooks";
-import { selectAllPosts } from "./postsSlice";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { selectPostByGame } from "./postsSlice";
 
-function PostsContainer() {
-const posts = useAppSelector(selectAllPosts)
+function FilteredPosts() {
+
+const {ttrpg} = useParams()
+
+const posts = useAppSelector(state => selectPostByGame(state, ttrpg))
 
     return <div>
                 <div className="flex flex-wrap-reverse">
@@ -49,4 +52,4 @@ const posts = useAppSelector(selectAllPosts)
             </div>
 }
 
-export default PostsContainer
+export default FilteredPosts;

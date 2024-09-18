@@ -14,7 +14,7 @@ function NavBar() {
 
  return (
     <nav className="shadow">
-      <div className="main-container">
+      <div className="main-container-fixed">
       <div className="navbar bg-base-100">
         <div className="navbar-start">
             <NavLink className="btn btn-ghost text-xl" to="/">The Tavern</NavLink>

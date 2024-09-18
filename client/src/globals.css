@@ -7,7 +7,7 @@
 }
 
 .main-container {
-  width: 60rem;
+  width: 70rem;
   margin: auto;
 }
 
@@ -23,7 +23,25 @@
 
 .posts-containers {
   margin: auto;
-  width: 30rem;
+  width: 40rem;
   justify-content: center;
   align-items: center;
+}
+
+.item-fixed {
+  position: fixed;
+}
+
+.main-container-fixed {
+  width: 70rem;
+  position: fixed;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.single-post {
+  width: 33rem;
+  position: fixed;
+  margin: 0 auto;
+  text-align: center;
 }
