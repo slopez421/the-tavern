@@ -2,12 +2,14 @@ import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { nanoid } from "@reduxjs/toolkit";
-import { useAppDispatch } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { postAdded} from './postsSlice'
+import { selectCurrentUsername } from "../auth/authSlice";
 
 function AddPostForm() {
 
 const dispatch = useAppDispatch()
+const user_id = useAppSelector(selectCurrentUsername)
 
 const postFormSchema = yup.object().shape({
     title: yup.string().required("A title is required.").min(10),
@@ -22,7 +24,7 @@ const postFormSchema = yup.object().shape({
 
 const postFormik = useFormik({
     initialValues: {
-        id: nanoid(),
+        id: 3,
         title: "",
         body: "",
         preferred_weekday: "",
@@ -31,16 +33,16 @@ const postFormik = useFormik({
         players_have : "",
         players_need : "",
         ttrpg : "",
-        user_id : 11
+        user_id : 1
     },
+
     validationSchema : postFormSchema,
     onSubmit: (values) => {
+        postFormik.resetForm()
         dispatch(postAdded(values))
         },
     });
 
-
-    
     return <div className="card-compact bg-base-100 shadow-xl max-w-lg mt-10 mx-2">
         <form className="card-body" onSubmit={postFormik.handleSubmit}>
             <p className="card-title text-primary justify-center">Adventuring Board</p><br />

@@ -70,7 +70,7 @@ class Post(db.Model, SerializerMixin):
     @validates('players_need', 'players_have')
     def validate_players_count(self, key, players):
         if int(players) > 6:
-            raise AttributeError("Players should be equal to or less than 6.")
+            raise AttributeError("Must be equal to or less than 6.")
         return int(players)
     
     def __repr__(self): return f'<Post {self.id}: {self.title}>'

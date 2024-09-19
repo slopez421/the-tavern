@@ -4,6 +4,8 @@ import { useAppSelector } from "../../hooks";
 import FilterMenu from "../../components/FilterMenu";
 import SiteStats from "../../components/SiteStats";
 import { selectPostById } from "./postsSlice";
+import { selectCurrentUsername } from "../auth/authSlice";
+import { selectUserById } from "../users/usersSlice";
 
 function SinglePostPage() {
 
@@ -51,7 +53,7 @@ function SinglePostPage() {
                     <div className="single-post">
                 <div className="card-compact w-full shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
             <div className="card-body">
-            <h3>Username: {post.user_id}</h3>
+            <h3>Username: {(post.user_id)}</h3>
                 <h2 className="card-title">{post.title}</h2>
                     <h3>This adventuring party has {post.players_have} players and is seeking {post.players_need} more players.</h3>
                 <p>{post.body}</p>

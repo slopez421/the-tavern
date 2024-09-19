@@ -7,7 +7,7 @@ const count = useAppSelector(selectAllPosts)
     return (
         <div className="stats stats-vertical shadow mt-10">
             <div className="stat">
-                <div className="stat-title">Posts</div>
+                <div className="stat-title">Total Posts on the Board</div>
                 <div className="stat-value">{count.length}</div>
                 <div className="stat-desc">Adventures waiting to be had!</div>
             </div>

@@ -1,15 +1,15 @@
 import {createSlice} from "@reduxjs/toolkit";
+import { selectCurrentUsername } from "../auth/authSlice";
 
-//define initial state, will replace later with api call
 const initialState = [
     { 
-        id: "1",
+        id: 1,
         username: 'sjohnson',
         first_name: 'Sally',
         last_name : 'Johnson',
     },
     { 
-        id: "2",
+        id: 2,
         username: 'jdoe',
         first_name: 'Jane',
         last_name : 'Doe',
@@ -27,6 +27,12 @@ const usersSlice = createSlice({
 
 export default usersSlice.reducer
 export const selectAllUsers = (state) => state.users
+
 export const selectUserById = (state, userId) =>
-    state.users.find(user => user.id === userId)
+    state.users.find(user => user.id === parseInt(userId))
+
+export const selectCurrentUser = (state) => {
+    const currentUsername = selectCurrentUsername(state)
+    return selectUserById(state, currentUsername)
+  }
 

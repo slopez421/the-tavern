@@ -2,6 +2,7 @@ import React from "react";
 import { useAppSelector } from "../../hooks";
 import { selectAllPosts } from "./postsSlice";
 import { Link } from "react-router-dom";
+import PostAuthor from "./PostAuthor";
 
 function PostsContainer() {
 const posts = useAppSelector(selectAllPosts)
@@ -11,7 +12,7 @@ const posts = useAppSelector(selectAllPosts)
                     {posts.map((post) => (
                        <div key={post.id} className="card-normal shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
                        <div className="card-body">
-                       <h3>Username: {post.user_id}</h3>
+                       <h3><PostAuthor userId={post.user_id} /></h3>
                            <h2 className="card-title"><Link to={`/posts/${post.id}`}>{post.title}</Link></h2>
                                <h3>This adventuring party has {post.players_have} players and is seeking {post.players_need} more players.</h3>
                            <p>{post.body}</p>
