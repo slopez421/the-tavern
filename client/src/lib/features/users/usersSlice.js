@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {createSlice} from "@reduxjs/toolkit";
 
 //define initial state, will replace later with api call
 const initialState = [

@@ -9,6 +9,7 @@ function SinglePostPage() {
 
     const {postId} = useParams()
     const post = useAppSelector(state => selectPostById(state, postId))
+    
     if (!post) {
         return (
             <div>

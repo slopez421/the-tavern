@@ -5,6 +5,7 @@ import SiteStats from "./SiteStats";
 import AddPostForm from "../features/posts/AddPostForm";
 
 function Home() {
+    const [filter, setFilter] = useState("all")
 
     return (
         <div className="grid grid-cols-4">
@@ -17,7 +18,6 @@ function Home() {
                 <div>
                 <AddPostForm />
                 <PostsContainer/>
-                
                 </div>
             </div>
             <div className="col-span-1 mt-10">

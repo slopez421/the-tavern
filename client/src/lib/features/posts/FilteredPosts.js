@@ -1,17 +1,18 @@
 import React from "react";
 import { useAppSelector } from "../../hooks";
 import { Link, useParams } from "react-router-dom";
-import { selectPostByGame } from "./postsSlice";
+import { selectAllPosts } from "./postsSlice";
 
 function FilteredPosts() {
 
 const {ttrpg} = useParams()
 
-const posts = useAppSelector(state => selectPostByGame(state, ttrpg))
+const posts = useAppSelector(selectAllPosts)
+const filtered_posts = posts.filter((post) => post.ttrpg == ttrpg)
 
     return <div>
                 <div className="flex flex-wrap-reverse">
-                    {posts.map((post) => (
+                    {filtered_posts.map((post) => (
                        <div key={post.id} className="card-normal shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
                        <div className="card-body">
                        <h3>Username: {post.user_id}</h3>
