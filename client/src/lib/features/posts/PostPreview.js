@@ -1,18 +1,13 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
-import { useGetPostsQuery } from "../api/apiSlice";
+import PostAuthor from "./PostAuthor";
+import { Link } from "react-router-dom";
+const PostPreview = ({post}) => {
 
-function FilteredPosts() {
-
-const {ttrpg} = useParams()
-const {data: posts} = useGetPostsQuery()
-
-    return <div>
-                <div className="flex flex-wrap-reverse">
-                    {posts.map((post) => (
-                       <div key={post.id} className="card-normal shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
+    return(
+        <div className="flex flex-wrap-reverse">
+                       <div className="card-normal shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
                        <div className="card-body">
-                       <h3>Username: {post.user_id}</h3>
+                       <h3>Username</h3>
                            <h2 className="card-title"><Link to={`/posts/${post.id}`}>{post.title}</Link></h2>
                                <h3>This adventuring party has {post.players_have} players and is seeking {post.players_need} more players.</h3>
                            <p>{post.body}</p>
@@ -43,11 +38,8 @@ const {data: posts} = useGetPostsQuery()
                        </div>
                </div>
              </div>
-                    )
-                    )}
                 </div>
-        
-            </div>
+    )
+    
 }
-
-export default FilteredPosts;
+export default PostPreview

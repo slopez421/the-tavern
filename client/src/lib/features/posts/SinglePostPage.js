@@ -6,12 +6,24 @@ import SiteStats from "../../components/SiteStats";
 import { selectPostById } from "./postsSlice";
 import { selectCurrentUsername } from "../auth/authSlice";
 import { selectUserById } from "../users/usersSlice";
+import { useGetPostByIdQuery } from "../api/apiSlice";
 
 function SinglePostPage() {
-
-    const {postId} = useParams()
-    const post = useAppSelector(state => selectPostById(state, postId))
+    let postId = useParams()
+    console.log(Number(postId.id))
+    const num_id = Number(postId.id)
+    const {data: post, isLoading, isSuccess, isError, error} = useGetPostByIdQuery(num_id)
     
+    console.log(isSuccess, isError, post, postId.id)
+    let content;
+    if (isLoading) {
+        content = <span className="loading loading-spinner loading-lg"></span>
+    }
+
+    if (isError) {
+        content = <p>{error}</p>
+    }
+
     if (!post) {
         return (
             <div>
@@ -40,7 +52,8 @@ function SinglePostPage() {
         )
     }
 
-    return (
+    if (isSuccess) {
+        content = (
         (
         <div>
             <div className="grid grid-cols-4">
@@ -95,6 +108,8 @@ function SinglePostPage() {
         </div>
         )
 )
+}
+return {content}
 }
 
 export default SinglePostPage;

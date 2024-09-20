@@ -1,14 +1,14 @@
 import React from "react";
-import { selectAllPosts } from "../features/posts/postsSlice";
-import { useAppSelector } from "../hooks";
+import { useGetPostsQuery } from "../features/api/apiSlice";
 
 function SiteStats() {
-const count = useAppSelector(selectAllPosts)
+    const {data: posts, isLoading, isSuccess, isError, error} = useGetPostsQuery('getPosts')
+
     return (
         <div className="stats stats-vertical shadow mt-10">
             <div className="stat">
                 <div className="stat-title">Total Posts on the Board</div>
-                <div className="stat-value">{count.length}</div>
+                <div className="stat-value">Num</div>
                 <div className="stat-desc">Adventures waiting to be had!</div>
             </div>
         <div className="stat">

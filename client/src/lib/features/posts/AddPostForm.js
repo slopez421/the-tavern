@@ -1,15 +1,13 @@
-import React from "react";
+import React, {useState} from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { nanoid } from "@reduxjs/toolkit";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { postAdded} from './postsSlice'
+import { useAddNewPostMutation } from "../api/apiSlice";
 import { selectCurrentUsername } from "../auth/authSlice";
 
 function AddPostForm() {
 
-const dispatch = useAppDispatch()
-const user_id = useAppSelector(selectCurrentUsername)
+const [addPost, {isLoading}] = useAddNewPostMutation()
+const  canSubmit = !isLoading
 
 const postFormSchema = yup.object().shape({
     title: yup.string().required("A title is required.").min(10),
@@ -24,7 +22,6 @@ const postFormSchema = yup.object().shape({
 
 const postFormik = useFormik({
     initialValues: {
-        id: 3,
         title: "",
         body: "",
         preferred_weekday: "",
@@ -33,13 +30,13 @@ const postFormik = useFormik({
         players_have : "",
         players_need : "",
         ttrpg : "",
-        user_id : 1
+        user_id : 11
     },
 
     validationSchema : postFormSchema,
     onSubmit: (values) => {
+        addPost(values).unwrap()
         postFormik.resetForm()
-        dispatch(postAdded(values))
         },
     });
 
@@ -158,7 +155,7 @@ const postFormik = useFormik({
                 <span className="label-text-alt" style={{ color: "red" }}> {postFormik.errors.body}</span>
             </div>
             <textarea id="body" type="text" className="textarea input-xs textarea-bordered textarea-success" placeholder="Describe your campaign!" name="body" onChange={postFormik.handleChange} value={postFormik.values.body} /><br></br>
-        <button className="btn btn-primary" type="submit" onClick={() => console.log(postFormik.values)}>Submit</button>
+        <button className="btn btn-primary" type="submit" disabled={!canSubmit} onClick={() => console.log(postFormik.values)}>Submit</button>
         </form>
     </div>
 }

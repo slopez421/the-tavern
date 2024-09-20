@@ -12,7 +12,9 @@ from config import app, db, api
 from models import User, Comment, Post, Like, Thread, Message
 
 # Views go here!
-
+class Docs(Resource):
+    def get(self):
+        return {"message": "welcome to the tavern"}, 200
 #class CheckSession(Resource):
     #def get(self):
         #if session.get('user_id'):
@@ -21,8 +23,9 @@ from models import User, Comment, Post, Like, Thread, Message
         #return {'error': 'Unauthorized. Not Logged In'}, 401
 
 class PostByID(Resource):
-    def get(self, id):
-        post = db.session.query(Post).filter_by(id=id).first()
+    def get(self, postId):
+        int(postId)
+        post = db.session.query(Post).filter_by(id=postId).first()
         return post.to_dict(), 200
 
 class PostIndex(Resource):
@@ -198,7 +201,7 @@ class MessageIndex(Resource):
             return {"error" : "Failed to send message"}, 422
 
 api.add_resource(PostIndex, '/posts')
-api.add_resource(PostByID, '/posts/<int:id>')
+api.add_resource(PostByID, '/posts/<int:postId>')
 api.add_resource(UserIndex, '/users')
 api.add_resource(UserById, '/users/<int:id>')
 api.add_resource(CommentIndex, '/comments')
@@ -207,6 +210,8 @@ api.add_resource(LikeById, '/likes/<int:id>')
 api.add_resource(ThreadIndex, '/threads')
 api.add_resource(MessageIndex, '/messages')
 api.add_resource(Signup, '/signup')
+api.add_resource(Docs, '/')
+
 
 
 
