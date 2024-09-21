@@ -15,7 +15,7 @@ function PostsContainer() {
     } else if (isError) {
         content = <p>{error.message}</p>
     }
-    return (<div>
+    return (<div className="flex flex-row flex-wrap-reverse flex-none">
         {content}
             </div>);
 }

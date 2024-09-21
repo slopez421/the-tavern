@@ -7,52 +7,22 @@ import { selectPostById } from "./postsSlice";
 import { selectCurrentUsername } from "../auth/authSlice";
 import { selectUserById } from "../users/usersSlice";
 import { useGetPostByIdQuery } from "../api/apiSlice";
+import { useResolvedPath } from "react-router";
 
-function SinglePostPage() {
-    let postId = useParams()
-    console.log(Number(postId.id))
-    const num_id = Number(postId.id)
-    const {data: post, isLoading, isSuccess, isError, error} = useGetPostByIdQuery(num_id)
+export const SinglePostPage = () => {
+    const path = useResolvedPath()
+    const postId = path.pathname.replace(/[\D]/g, '')
+    const {data: post, isLoading, isSuccess, isError, error} = useGetPostByIdQuery(postId)
     
-    console.log(isSuccess, isError, post, postId.id)
+    console.log(isSuccess, isError, post, postId)
+
     let content;
+
     if (isLoading) {
         content = <span className="loading loading-spinner loading-lg"></span>
-    }
-
-    if (isError) {
-        content = <p>{error}</p>
-    }
-
-    if (!post) {
-        return (
-            <div>
-                <div className="grid grid-cols-4">
-                    <div className="col-span-1 mt-10">
-                        <div className="item-fixed">
-                        <FilterMenu />
-                        </div>
-                    </div>
-                    <div className="col-span-2 mt-10">
-                        <div className="single-post">
-                        <div className="card-compact w-full shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
-                        <div className="card-body">
-                        <div>Post not found!</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                    <div className="col-span-1 mt-10">
-                    <div className="home-stats">
-                        <SiteStats />
-                    </div>
-                </div>
-        </div>
-        </div>
-        )
-    }
-
-    if (isSuccess) {
+    } else if (isError) {
+        content = <p>{error.toString()}</p>
+    } else if (isSuccess) {
         content = (
         (
         <div>
@@ -66,7 +36,7 @@ function SinglePostPage() {
                     <div className="single-post">
                 <div className="card-compact w-full shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
             <div className="card-body">
-            <h3>Username: {(post.user_id)}</h3>
+            <h3>Username: {post.user_id}</h3>
                 <h2 className="card-title">{post.title}</h2>
                     <h3>This adventuring party has {post.players_have} players and is seeking {post.players_need} more players.</h3>
                 <p>{post.body}</p>
@@ -108,8 +78,35 @@ function SinglePostPage() {
         </div>
         )
 )
-}
-return {content}
+} else if (!post) {
+        return (
+            <div>
+                <div className="grid grid-cols-4">
+                    <div className="col-span-1 mt-10">
+                        <div className="item-fixed">
+                        <FilterMenu />
+                        </div>
+                    </div>
+                    <div className="col-span-2 mt-10">
+                        <div className="single-post">
+                        <div className="card-compact w-full shrink-1 shadow-2xl rounded-box bg-primary text-primary-content mt-10">
+                        <div className="card-body">
+                        <div>Post not found!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    <div className="col-span-1 mt-10">
+                    <div className="home-stats">
+                        <SiteStats />
+                    </div>
+                </div>
+        </div>
+        </div>
+        )
+    }
+    
+return (content)
 }
 
 export default SinglePostPage;

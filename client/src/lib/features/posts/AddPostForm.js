@@ -7,7 +7,6 @@ import { selectCurrentUsername } from "../auth/authSlice";
 function AddPostForm() {
 
 const [addPost, {isLoading}] = useAddNewPostMutation()
-const  canSubmit = !isLoading
 
 const postFormSchema = yup.object().shape({
     title: yup.string().required("A title is required.").min(10),
@@ -34,8 +33,12 @@ const postFormik = useFormik({
     },
 
     validationSchema : postFormSchema,
-    onSubmit: (values) => {
-        addPost(values).unwrap()
+    onSubmit: async (values) => {
+        try {
+            await addPost(values).unwrap()
+        } catch (err) {
+            console.log(err)
+        }
         postFormik.resetForm()
         },
     });
@@ -155,7 +158,7 @@ const postFormik = useFormik({
                 <span className="label-text-alt" style={{ color: "red" }}> {postFormik.errors.body}</span>
             </div>
             <textarea id="body" type="text" className="textarea input-xs textarea-bordered textarea-success" placeholder="Describe your campaign!" name="body" onChange={postFormik.handleChange} value={postFormik.values.body} /><br></br>
-        <button className="btn btn-primary" type="submit" disabled={!canSubmit} onClick={() => console.log(postFormik.values)}>Submit</button>
+        <button className="btn btn-primary" type="submit" disabled={isLoading} onClick={() => console.log(postFormik.values)}>Submit</button>
         </form>
     </div>
 }
