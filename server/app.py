@@ -11,16 +11,18 @@ from config import app, db, api
 # Add your model imports
 from models import User, Comment, Post, Like, Thread, Message
 
+
 # Views go here!
 class Docs(Resource):
     def get(self):
         return {"message": "welcome to the tavern"}, 200
-#class CheckSession(Resource):
-    #def get(self):
-        #if session.get('user_id'):
-            #user = db.session.query(User).filter(User.id == session['user_id']).first()
-            #return user.to_dict(), 200
-        #return {'error': 'Unauthorized. Not Logged In'}, 401
+
+class CheckSession(Resource):
+    def get(self):
+        if session.get('user_id'):
+            user = db.session.query(User).filter(User.id == session['user_id']).first()
+            return user.to_dict(), 200
+        return {'error': 'Unauthorized. Not Logged In'}, 401
 
 class PostByID(Resource):
     def get(self, postId):
@@ -35,8 +37,8 @@ class PostIndex(Resource):
     
     def post(self):
 
-        title = request.get_json['title']
-        body = request.get_json['body']
+        title = request.get_json()['title']
+        body = request.get_json()['body']
         preferred_weekday = request.get_json()['preferred_weekday']
         preferred_time = request.get_json()['preferred_time']
         timezone = request.get_json()['timezone']
@@ -210,11 +212,9 @@ api.add_resource(LikeById, '/likes/<int:id>')
 api.add_resource(ThreadIndex, '/threads')
 api.add_resource(MessageIndex, '/messages')
 api.add_resource(Signup, '/signup')
+api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
 api.add_resource(Docs, '/')
-
-
-
-
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

@@ -1,18 +1,18 @@
 import React from "react";
 import { Route, Routes, Navigate} from "react-router";
-import Navbar from "./lib/components/Navbar";
 import { useAppSelector } from "./lib/hooks";
 import Login from "./lib/features/auth/Login";
 import Home from "./lib/components/Home";
 import SinglePostPage from "./lib/features/posts/SinglePostPage";
 import FilteredPosts from "./lib/features/posts/FilteredPosts";
-import { selectCurrentUsername } from "./lib/features/auth/authSlice";
 import Layout from "./lib/components/Layout";
+import { selectCurrentUser } from "./lib/features/users/usersSlice";
+
 
 function App() {
   const ProtectedRoutes = () => {
-    const username = useAppSelector(selectCurrentUsername)
-    return (username ? <Layout /> : <Navigate to="/login"/>)
+    const user = useAppSelector(selectCurrentUser)
+    return (user ? <Layout /> : <Navigate to="/login"/>)
     }
 
   return <div>

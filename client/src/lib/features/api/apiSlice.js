@@ -7,7 +7,9 @@ export const apiSlice = createApi({
     endpoints: builder => ({
         getPosts: builder.query({
             query: () => '/posts',
-            headers: {'Access-Control-Allow-Origin': 'http://localhost:3000'}
+            headers: {
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'Content-type' : 'application/json'},
         }),
         getPostById: builder.query({
             query: (postId) => ({url : `/posts/${postId}`}),
@@ -17,14 +19,41 @@ export const apiSlice = createApi({
         }),
         addNewPost: builder.mutation({
             query: initialPost => ({
-                url: '/posts',
-                method: 'POST',
-                body: {
+            url: '/posts',
+            headers: {
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'Content-type' : 'application/json'},
+            method: 'POST',
+            body: {
                     ...initialPost,
                 }
-            }),
-    }),
+            })
+        }),
+        login: builder.mutation({
+            query: credentials => ({
+            url: '/login',
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'Content-type' : 'application/json'},
+            body: {
+                    ...credentials
+            }    
+        }),
+        logout: builder.mutation({
+            query: () => ({
+            url: '/logout',
+            method: 'DELETE',
+        }),  
+        checkSession: builder.query({
+            query: () => '/check_session',
+            headers: {
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'Content-type' : 'application/json'},
+        }) 
+ })    
+})
 })
 })
 
-export const {useGetPostsQuery, useGetPostByIdQuery, useAddNewPostMutation} = apiSlice
+export const {useGetPostsQuery, useGetPostByIdQuery, useAddNewPostMutation, useLoginMutation, useLogoutMutation, checkSession} = apiSlice
