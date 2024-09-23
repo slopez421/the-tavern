@@ -1,22 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { userLoggedOut } from "../features/auth/authSlice";
 import { useLogoutMutation } from "../features/api/apiSlice";
-import { logout as logoutReducer, selectCurrentUser} from "../features/users/usersSlice";
+import {logoutReducer, selectCurrentUser} from "../features/users/usersSlice";
 
 function Navbar() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const user = useAppSelector(selectCurrentUser)
-  console.log('before logging out', user)
-  const handleLogout = () => {
-    dispatch(logoutReducer)
-    navigate('/login')
-    console.log({'userLoggedOut': {user}})
-  }
+  const [clicked, setClicked] = useState(false)
 
-
+  function handleLogout() {
+    fetch("/logout", {
+        method: "DELETE"}).then((r) => {
+            if (r.ok) {
+              dispatch(logoutReducer(null))
+            }
+        })
+    }
+ 
 return (
     <nav className="shadow">
       <div className="main-container-fixed">
@@ -27,7 +30,7 @@ return (
           <div className="navbar-end">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost w-25">
-                <span className="text-sm"> Hi!</span>
+                <span className="text-sm"> Hi {user.first_name}!</span>
               </div>
                 <ul
                   tabIndex={0}

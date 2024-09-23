@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request, make_response, jsonify, session
+from flask import request, make_response, jsonify, session, Response
 from flask_restful import Resource
 
 # Local imports
@@ -11,11 +11,24 @@ from config import app, db, api
 # Add your model imports
 from models import User, Comment, Post, Like, Thread, Message
 
-
 # Views go here!
+@app.before_request
+def func():
+  session.modified = True
+
+
+@app.after_request
+def add_headers(response):
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PATCH, DELETE'
+        response.headers['Access-Control-Allow-Headers'] = "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        return response
+
 class Docs(Resource):
     def get(self):
         return {"message": "welcome to the tavern"}, 200
+
 
 class CheckSession(Resource):
     def get(self):
@@ -84,7 +97,6 @@ class UserIndex(Resource):
     def get(self):
         users = db.session.query(User).all()
         return [user.to_dict() for user in users], 200
-
 
 class Signup(Resource):
      def post(self):
@@ -155,9 +167,9 @@ class Login(Resource):
         username = request.get_json()['username']
         password = request.get_json()['password']
         user =  db.session.query(User).filter(User.username == username).first()
-
         if (user) and (user.authenticate(password)):
             session['user_id'] = user.id
+            session.permanent = True
             return user.to_dict(), 200
         
         return {'error': 'Invalid username or password.'}, 401
@@ -215,6 +227,7 @@ api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(Docs, '/')
+api.add_resource(CheckSession, '/check_session')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

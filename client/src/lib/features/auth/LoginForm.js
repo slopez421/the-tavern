@@ -2,20 +2,18 @@ import React from "react";
 import * as yup from "yup"
 import { useFormik } from "formik";
 import { useLoginMutation } from "../api/apiSlice";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { login as loginReducer, selectCurrentUser } from "../users/usersSlice";
+import { useAppDispatch } from "../../hooks";
+import {loginReducer} from "../users/usersSlice";
 import { useNavigate } from "react-router";
-
 
 function LoginForm({setShowLogin}) {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
-    const [login, {isLoading, isSuccess}] = useLoginMutation()
-    const selectUser = useAppSelector(selectCurrentUser)
-
+    const [login, {isLoading, isSuccess, isError, error}] = useLoginMutation()
 
     const loginFormSchema = yup.object().shape({
         username: yup.string().required("Username is required to login."),
+        password: yup.string().required('Password is required to login.')
       });
       
       const loginFormik = useFormik({
@@ -23,21 +21,15 @@ function LoginForm({setShowLogin}) {
             username: "",
             password: ""
         },
-        
-        validationSchema : loginFormSchema,
-        onSubmit: async (values) => {
-           try {
-            const user = await login(values).unwrap()
-            console.log({'Submission': user})
-            dispatch(loginReducer(user))
-            console.log({'userloggedin' : selectUser})
-            navigate('/')
 
-        } catch (err) {
-            console.log({"Error" : err})
-        }
-            },
-        });
+        validationSchema : loginFormSchema,
+        onSubmit: (values) => {
+            login(values).then((payload) => {
+            console.log('login:', payload.data)
+            dispatch(loginReducer(payload.data))
+            navigate('/')
+            })
+}});
 
     return <div className="card bg-base-100 w-96 max-w-sm shrink-0 shadow-2xl">
         <form className="card-body" onSubmit={loginFormik.handleSubmit}>
@@ -65,8 +57,7 @@ function LoginForm({setShowLogin}) {
             d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
             clipRule="evenodd" />
             </svg>
-            <input type="text" className="grow" placeholder="Username" id="password" name="password" onChange={loginFormik.handleChange} value={loginFormik.values.password}/>
-
+            <input type="password" className="grow" placeholder="Password" id="password" name="password" onChange={loginFormik.handleChange} value={loginFormik.values.password}/>
             </label>
             <button className="btn btn-primary" disabled={isLoading} type="submit">Login</button>
             <button className="btn btn-primary" onClick={() => {setShowLogin(false)}}>Don't have an account?</button>

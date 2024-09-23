@@ -8,7 +8,7 @@ from config import db, bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     
-    serialize_only = ('id', 'username', 'first_name', 'last_name', 'likes',)
+    serialize_only = ('id', 'username', 'first_name', 'last_name',)
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)

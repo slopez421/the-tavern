@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import FilterMenu from "./FilterMenu";
 
 const Layout = () => {
+
     return (
         <>
             <Navbar />
