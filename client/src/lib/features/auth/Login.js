@@ -3,7 +3,7 @@ import { useState } from "react";
 import SignUpForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 
-function Login() {
+function Login({setUser}) {
 
 const [showLogin, setShowLogin] = useState(true);
 
@@ -11,7 +11,7 @@ const [showLogin, setShowLogin] = useState(true);
         <div className="grid place-content-center m-40">
             {showLogin ? (
                 <>
-                <LoginForm setShowLogin={setShowLogin}/>
+                <LoginForm setUser={setUser} setShowLogin={setShowLogin}/>
                 </>
                 ): (
                 <>

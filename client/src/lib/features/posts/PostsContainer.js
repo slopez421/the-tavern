@@ -1,16 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import PostPreview from "./PostPreview";
 import { useGetPostsQuery } from "../api/apiSlice";
 import { useGetLikesQuery } from "../api/apiSlice";
 import { useAppSelector } from "../../hooks";
-import { selectCurrentUser
+import { UserId } from "../../../App";
 
- } from "../users/usersSlice";
 function PostsContainer() {
+    
     const {data: posts, isLoading, isSuccess, isError, error} = useGetPostsQuery()
     const {data: likes} = useGetLikesQuery()
-    const user = useAppSelector(selectCurrentUser)
-    const user_likes = likes?.filter((like) => like.user_id === user.id)
+    const user_likes = likes?.filter((like) => like.user_id === UserId)
     let content;
 
 
@@ -21,7 +20,7 @@ function PostsContainer() {
     } else if (isError) {
         content = <p>{error.message}</p>
     }
-    return (<div className="flex flex-row flex-wrap-reverse flex-none">
+    return (<div className="flex flex-col-reverse flex-none">
         {content}
             </div>);
 }

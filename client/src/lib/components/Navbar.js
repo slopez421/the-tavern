@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { userLoggedOut } from "../features/auth/authSlice";
 import { useLogoutMutation } from "../features/api/apiSlice";
 import {logoutReducer, selectCurrentUser} from "../features/users/usersSlice";
+import { FirstNameContext } from "../../App";
 
 function Navbar() {
+  const first_name = useContext(FirstNameContext)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const user = useAppSelector(selectCurrentUser)
@@ -19,7 +21,7 @@ function Navbar() {
             }
         })
     }
- 
+
 return (
     <nav className="shadow">
       <div className="main-container-fixed">
@@ -30,7 +32,7 @@ return (
           <div className="navbar-end">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost w-25">
-                <span className="text-sm"> Hi {user.first_name}!</span>
+                <span className="text-sm"> Hi {first_name}!</span>
               </div>
                 <ul
                   tabIndex={0}

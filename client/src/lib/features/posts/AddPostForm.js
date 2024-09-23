@@ -10,7 +10,7 @@ const [addPost, {isLoading}] = useAddNewPostMutation()
 
 const postFormSchema = yup.object().shape({
     title: yup.string().required("A title is required.").min(10),
-    body: yup.string().required("A description is required.").min(10).max(200),
+    body: yup.string().required("A description is required.").min(50).max(1000),
     preferred_weekday: yup.string().required("Please choose a weekday."),
     preferred_time: yup.string().required("Please choose a time of day."),
     timezone: yup.string().required("Please choose your timezone."),
@@ -43,7 +43,7 @@ const postFormik = useFormik({
         },
     });
 
-    return <div className="card-compact bg-base-100 shadow-xl max-w-lg mt-10 mx-2">
+    return <div className="card-compact bg-base-100 shadow-xl max-w-lg mt-10 mx-2 rounded-box">
         <form className="card-body" onSubmit={postFormik.handleSubmit}>
             <p className="card-title text-primary justify-center">Adventuring Board</p><br />
             <label className="form-control w-full max-w-s-xs">

@@ -6,10 +6,9 @@ import { useAppDispatch } from "../../hooks";
 import {loginReducer} from "../users/usersSlice";
 import { useNavigate } from "react-router";
 
-function LoginForm({setShowLogin}) {
+function LoginForm({setShowLogin, setUser}) {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
-    const [login, {isLoading, isSuccess, isError, error}] = useLoginMutation()
 
     const loginFormSchema = yup.object().shape({
         username: yup.string().required("Username is required to login."),
@@ -24,12 +23,27 @@ function LoginForm({setShowLogin}) {
 
         validationSchema : loginFormSchema,
         onSubmit: (values) => {
-            login(values).then((payload) => {
-            console.log('login:', payload.data)
-            dispatch(loginReducer(payload.data))
-            navigate('/')
-            })
-}});
+            console.log(values)
+            fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            }).then((res) => {
+                if (res.ok) {
+                    res.json().then((user) => 
+                        {   
+                            console.log(setUser)
+                            setUser(user);
+                            navigate('/')
+                        });
+                } else {
+                  res.json().then((error) => {console.log(error)})
+                }
+                });
+            },
+    });
 
     return <div className="card bg-base-100 w-96 max-w-sm shrink-0 shadow-2xl">
         <form className="card-body" onSubmit={loginFormik.handleSubmit}>
@@ -59,7 +73,7 @@ function LoginForm({setShowLogin}) {
             </svg>
             <input type="password" className="grow" placeholder="Password" id="password" name="password" onChange={loginFormik.handleChange} value={loginFormik.values.password}/>
             </label>
-            <button className="btn btn-primary" disabled={isLoading} type="submit">Login</button>
+            <button className="btn btn-primary" type="submit">Login</button>
             <button className="btn btn-primary" onClick={() => {setShowLogin(false)}}>Don't have an account?</button>
         </form>
     </div>

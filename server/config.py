@@ -4,6 +4,7 @@
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -19,7 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 app.config.update(SESSION_COOKIE_SAMESITE='Lax', SESSION_COOKIE_SECURE=True)
 app.config["JWT_SECRET_KEY"] = b'\x19\xa2wh\xc1\xb5\x8d\x15\x05\x8b\xdf\xa4r\xa8\xae\\'
-
+jwt = JWTManager(app)
 
 
 

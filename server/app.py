@@ -4,6 +4,7 @@
 
 # Remote library imports
 from flask import request, make_response, jsonify, session, Response
+from flask_jwt_extended import create_access_token
 from flask_restful import Resource
 
 # Local imports
@@ -168,9 +169,11 @@ class Login(Resource):
         password = request.get_json()['password']
         user =  db.session.query(User).filter(User.username == username).first()
         if (user) and (user.authenticate(password)):
-            session['user_id'] = user.id
-            session.permanent = True
-            return user.to_dict(), 200
+            #session['user_id'] = user.id
+            #session.permanent = True
+            additional_claims = {"username": user.username, "first_name": user.first_name, "last_name": user.last_name, "id" : user.id}
+            access_token = create_access_token(identity=user.id, additional_claims=additional_claims)
+            return access_token, 200
         
         return {'error': 'Invalid username or password.'}, 401
 
