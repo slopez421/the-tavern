@@ -46,7 +46,7 @@ class User(db.Model, SerializerMixin):
 class Post(db.Model, SerializerMixin):
     __tablename__ = 'posts'
 
-    serialize_only = ('id', 'title', 'body', 'preferred_weekday', 'preferred_time', 'players_have', 'players_need', 'ttrpg', 'user_id', 'timezone')
+    serialize_only = ('id', 'title', 'body', 'preferred_weekday', 'preferred_time', 'players_have', 'players_need', 'ttrpg', 'user_id', 'timezone', 'likes', 'user.username', 'comments')
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
@@ -73,12 +73,18 @@ class Post(db.Model, SerializerMixin):
             raise AttributeError("Must be equal to or less than 6.")
         return int(players)
     
+    @validates('ttrpg')
+    def validate_ttrpg(self, key, ttrpg):
+        if ttrpg not in ['dnd', 'vtm', 'fallout', 'mtg', 'pathfinder', 'shadowrun']:
+            raise AttributeError("Category must be an approved official source.")
+        return ttrpg
+    
     def __repr__(self): return f'<Post {self.id}: {self.title}>'
 
 class Comment(db.Model, SerializerMixin):
     __tablename__ = 'comments'
 
-    serialize_only = ('body', 'id','post_id','user_id',)
+    serialize_only = ('body', 'id','post_id','user_id', 'user.username')
 
 
     id = db.Column(db.Integer, primary_key=True)

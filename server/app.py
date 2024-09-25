@@ -13,10 +13,6 @@ from config import app, db, api
 from models import User, Comment, Post, Like, Thread, Message
 
 # Views go here!
-@app.before_request
-def func():
-  session.modified = True
-
 
 @app.after_request
 def add_headers(response):
@@ -125,9 +121,9 @@ class CommentIndex(Resource):
     def post(self):
         body = request.get_json()['body']
         user_id = request.get_json()['user_id']
-        listing_id = request.get_json()['listing_id']
+        post_id = request.get_json()['post_id']
 
-        comment = Comment(body=body, user_id=user_id, listing_id=listing_id)
+        comment = Comment(body=body, user_id=user_id, post_id=post_id)
         try:
             db.session.add(comment)
             db.session.commit()
@@ -186,7 +182,7 @@ class ThreadIndex(Resource):
     def get(self):
         threads = db.session.query(Thread).all()
         return [thread.to_dict() for thread in threads], 200
-    
+
     def post(self):
         thread_creator_id = request.get_json()['thread_creator_id']
         thread_receiver_id = request.get_json()['thread_receiver_id']
@@ -197,8 +193,13 @@ class ThreadIndex(Resource):
             db.session.commit()
             return new_thread.to_dict()
         except:
-            return {"error" : "Failred to start a new thread."}, 422
+            return {"error" : "Failed to start a new thread."}, 422
 
+class MessagesByThread(Resource):
+    def get(self, id):
+        thread = db.session.query(Thread).filter_by(id=id).first()
+        return thread.to_dict(), 200
+    
 class MessageIndex(Resource):
     def get(self):
         messages = db.session.query(Message).all()
@@ -217,8 +218,15 @@ class MessageIndex(Resource):
         except:
             return {"error" : "Failed to send message"}, 422
 
+class PostsByCategory(Resource):
+    def get(self, ttrpg):
+        posts = db.session.query(Post).filter_by(ttrpg=ttrpg).all()
+        return [post.to_dict() for post in posts], 200
+
+
 api.add_resource(PostIndex, '/posts')
 api.add_resource(PostByID, '/posts/<int:postId>')
+api.add_resource(PostsByCategory, '/posts/category/<string:ttrpg>')
 api.add_resource(UserIndex, '/users')
 api.add_resource(UserById, '/users/<int:id>')
 api.add_resource(CommentIndex, '/comments')
@@ -226,6 +234,7 @@ api.add_resource(LikeIndex, '/likes')
 api.add_resource(LikeById, '/likes/<int:id>')
 api.add_resource(ThreadIndex, '/threads')
 api.add_resource(MessageIndex, '/messages')
+api.add_resource(MessagesByThread, '/messages/thread/<int:id>')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')

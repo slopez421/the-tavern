@@ -40,7 +40,7 @@ if __name__ == '__main__':
         print("Creating posts...")
         posts = []
         timezones = ["Pacific Time (US) | PDT UTC-7", "Mountain Time (US) | MDT UTC-6", "Central Time (US) | CDT UTC-5", "Eastern Time (US) | EDT UTC-4"]
-        games = ["Dungeons and Dragons", "Vampire: The Masquerade", "Shadowrun", "Fallout: The Tabletop Game", "Magic: The Gathering", "Pathfinder"]
+        games = ["dnd", "vtm", "shadowrun", "fallout", "mtg", "pathfinder"]
         for i in range(10):
             post = Post(
                 title = fake.sentence(),
