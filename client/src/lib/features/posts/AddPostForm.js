@@ -1,12 +1,15 @@
-import React, {useState} from "react";
+import React, { useCallback } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useAddNewPostMutation } from "../api/apiSlice";
-import { selectCurrentUsername } from "../auth/authSlice";
+import { useContext } from "react";
+import { UserIdContext } from "../../../App";
+import { useMemo } from "react";
 
-function AddPostForm() {
+function AddPostForm({setRefresh}) {
+const userid = useContext(UserIdContext)
 
-const [addPost, {isLoading}] = useAddNewPostMutation()
+//const currentUserid = useMemo(() => userid, [userid])
+//console.log('current:', currentUserid)
 
 const postFormSchema = yup.object().shape({
     title: yup.string().required("A title is required.").min(10),
@@ -21,6 +24,7 @@ const postFormSchema = yup.object().shape({
 
 const postFormik = useFormik({
     initialValues: {
+        
         title: "",
         body: "",
         preferred_weekday: "",
@@ -29,25 +33,32 @@ const postFormik = useFormik({
         players_have : "",
         players_need : "",
         ttrpg : "",
-        user_id : 11
+        user_id : userid,
     },
 
     validationSchema : postFormSchema,
-    onSubmit: async (values) => {
-        try {
-            await addPost(values).unwrap()
-        } catch (err) {
-            console.log(err)
-        }
-        postFormik.resetForm()
+    onSubmit: values => {
+        console.log('form values:', values)
+        fetch("/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+        }).then((res) => {
+            if (res.ok) {
+                postFormik.resetForm()
+               setRefresh()
+            }
+            });
         },
     });
-
-    return <div className="card-compact bg-base-100 shadow-xl max-w-lg mt-10 mx-2 rounded-box">
+    
+    return (userid ? <div className="card-compact bg-base-100 shadow-xl max-w-lg mt-10 mx-2 rounded-box">
         <form className="card-body" onSubmit={postFormik.handleSubmit}>
             <p className="card-title text-primary justify-center">Adventuring Board</p><br />
-            <label className="form-control w-full max-w-s-xs">
-            <div className="label">
+            <label className="form-control w-full max-w-s-xs ">
+            <div className="label ">
                 <span className="input-xs input-bordered flex items-center gap-2">Title</span>
                 <span className="label-text-alt" style={{ color: "red" }}>{postFormik.errors.title}</span>
             </div>
@@ -55,7 +66,7 @@ const postFormik = useFormik({
             </label>
             <div className="join">
             <div className="join-item">
-            <label className="form-control w-full max-w-s-xs">
+            <label className="form-control w-full max-w-s-xs items-center">
             <div className="label">
                 <span className="input-xs input-bordered flex items-center gap-2">How many players are in your party?</span>
             </div>
@@ -66,7 +77,7 @@ const postFormik = useFormik({
             </label>
             </div>
             <div className="join-item">
-            <label className="form-control w-full max-w-s-xs">
+            <label className="form-control w-full max-w-s-xs items-center">
             <div className="label">
                 <span className="input-xs input-bordered flex items-center gap-2">How many more are you looking for?</span>
             </div>
@@ -79,7 +90,7 @@ const postFormik = useFormik({
             </div>
             <div className="join">
             <div className="join-item">
-            <label className="form-control w-full max-w-s-xs">
+            <label className="form-control w-full max-w-s-xs items-center">
             <div className="label">
                 <span className="input-xs input-bordered flex items-center gap-2">What day are sessions held on?</span>
             </div>
@@ -98,17 +109,17 @@ const postFormik = useFormik({
             </label>
             </div>
             <div className="join-item">
-            <label className="form-control w-full max-w-s-xs">
+            <label className="form-control w-full max-w-s-xs items-center">
             <div className="label">
                 <span className="input-xs input-bordered flex items-center gap-2">What time of day are sessions held?</span>
             </div>
-            <select id="preferred_time" className="select select-xs select-bordered select-success w-11/12" name="preferred_time" onChange={postFormik.handleChange} value={postFormik.values.preferred_time}>
+            <select id="preferred_time" className="select select-xs select-bordered select-success w-11/12 " name="preferred_time" onChange={postFormik.handleChange} value={postFormik.values.preferred_time}>
                 <option value="Morning">Morning</option>
                 <option value="Afternoon">Afternoon</option>
                 <option value="Evening">Evening</option>
             </select>            
             <div className="label">
-                <span className="label-text-alt" style={{ color: "red" }}> {postFormik.errors.players_need}</span>
+                <span className="label-text-alt" style={{ color: "red" }}> {postFormik.errors.preferred_time}</span>
             </div>
             </label>
             </div>
@@ -116,7 +127,7 @@ const postFormik = useFormik({
 
             <div className="join">
             <div className="join-item">
-            <label className="form-control w-full max-w-s-xs">
+            <label className="form-control w-full max-w-s-xs items-center">
             <div className="label">
                 <span className="input-xs select-bordered flex items-center gap-2">What timezone best fits this schedule?</span>
             </div>
@@ -134,18 +145,17 @@ const postFormik = useFormik({
             </label>
             </div>
             <div className="join-item">
-            <label className="form-control w-full max-w-s-xs">
+            <label className="form-control w-full max-w-s-xs items-center">
             <div className="label">
                 <span className="input-xs input-bordered flex items-center gap-2">Which TTRPG rulebook is bring used?</span>
             </div>
             <select id="ttrpg" className="select select-xs select-bordered select-success w-11/12" name="ttrpg" onChange={postFormik.handleChange} value={postFormik.values.ttrpg}>
-                <option value="Dungeons and Dragons">Dungeons and Dragons</option>
-                <option value="Pathfinder">Pathfinder</option>
-                <option value="Magic: The Gathering">Magic: The Gathering</option>
-                <option value="Vampire: The Masquerade">Vampire: The Masquerade</option>
-                <option value="Fallout: The TTRPG">Fallout: The TTRPG</option>
-                <option value="Shadowrun">Shadowrun</option>
-                <option value="Cyberpunk">Cyberpunk</option>
+                <option value="dnd">Dungeons and Dragons</option>
+                <option value="pathfinder">Pathfinder</option>
+                <option value="mtg">Magic: The Gathering</option>
+                <option value="vtm">Vampire: The Masquerade</option>
+                <option value="fallout">Fallout: The TTRPG</option>
+                <option value="shadowrun">Shadowrun</option>
             </select>            
             <div className="label">
                 <span className="label-text-alt" style={{ color: "red" }}> {postFormik.errors.ttrpg}</span>
@@ -158,9 +168,9 @@ const postFormik = useFormik({
                 <span className="label-text-alt" style={{ color: "red" }}> {postFormik.errors.body}</span>
             </div>
             <textarea id="body" type="text" className="textarea input-xs textarea-bordered textarea-success" placeholder="Describe your campaign!" name="body" onChange={postFormik.handleChange} value={postFormik.values.body} /><br></br>
-        <button className="btn btn-primary" type="submit" disabled={isLoading} onClick={() => console.log(postFormik.values)}>Submit</button>
+        <button className="btn btn-success"type="submit">Submit</button>
         </form>
-    </div>
+    </div> : <></>)
 }
 
 export default AddPostForm

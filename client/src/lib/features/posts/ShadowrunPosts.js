@@ -1,10 +1,10 @@
 import React from "react";
-import PostsContainer from "../features/posts/PostsContainer";
-import FilterMenu from "./FilterMenu";
-import SiteStats from "./SiteStats";
+import SiteStats from "../../components/SiteStats";
+import FilterMenu from "../../components/FilterMenu";
+import FilteredPosts from "./FilteredPosts";
 
-function Home({setRefresh}) {
-
+function ShadowrunPosts({setRefresh}) {
+    const ttrpg = "shadowrun"
     return (
         <div className="grid grid-cols-4">
             <div className="col-span-1 mt-10">
@@ -13,8 +13,8 @@ function Home({setRefresh}) {
                 </div>
             </div>
             <div className="col-span-2 mt-10">
-                <div className="overscroll-none">
-                <PostsContainer setRefresh={setRefresh}/>
+                <div>
+                <FilteredPosts setRefresh={setRefresh} ttrpg={ttrpg} />
                 </div>
             </div>
             <div className="col-span-1 mt-10">
@@ -26,4 +26,4 @@ function Home({setRefresh}) {
     )
 }
 
-export default Home
+export default ShadowrunPosts

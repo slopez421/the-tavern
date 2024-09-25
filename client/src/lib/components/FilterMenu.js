@@ -1,20 +1,17 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 
 function FilterMenu() {
-
-
     return (
         <div className="filter-menu">
-          <ul className="menu bg-base-200 rounded-box w-56 mt-10">
-            <li><p>All Posts</p></li>
-            <li><p>Dungeons & Dragons</p></li>
-            <li><p>Pathfinder</p></li>
-            <li><p>Magic: The Gathering</p></li>
-            <li><p>Vampire: The Masquerade</p></li>
-            <li><p>Fallout: The TTRPG</p></li>
-            <li><p>Shadowrun</p></li>
-            <li><p>Cyberpunk</p></li>
+          <ul className="menu menu-sm bg-success rounded-box w-56 mt-10 mx-10">
+            <li><p><Link to={'/'}>All Posts</Link></p></li>
+            <li><p><Link to={'/posts/dnd'}>Dungeons & Dragons</Link></p></li>
+            <li><p><Link to={'/posts/pathfinder'}>Pathfinder</Link></p></li>
+            <li><p><Link to={'/posts/mtg'}>Magic: The Gathering</Link></p></li>
+            <li><p><Link to={'/posts/vtm'}>Vampire: The Masquerade</Link></p></li>
+            <li><p><Link to={'/posts/fallout'}>Fallout: The TTRPG</Link></p></li>
+            <li><p><Link to={'/posts/shadowrun'}>Shadowrun</Link></p></li>
             </ul>
     </div>
     )

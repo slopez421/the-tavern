@@ -165,8 +165,6 @@ class Login(Resource):
         password = request.get_json()['password']
         user =  db.session.query(User).filter(User.username == username).first()
         if (user) and (user.authenticate(password)):
-            #session['user_id'] = user.id
-            #session.permanent = True
             additional_claims = {"username": user.username, "first_name": user.first_name, "last_name": user.last_name, "id" : user.id}
             access_token = create_access_token(identity=user.id, additional_claims=additional_claims)
             return access_token, 200
@@ -198,7 +196,8 @@ class ThreadIndex(Resource):
 class MessagesByThread(Resource):
     def get(self, id):
         thread = db.session.query(Thread).filter_by(id=id).first()
-        return thread.to_dict(), 200
+        messages = thread.messages
+        return [message.to_dict() for message in messages], 200
     
 class MessageIndex(Resource):
     def get(self):
@@ -234,7 +233,7 @@ api.add_resource(LikeIndex, '/likes')
 api.add_resource(LikeById, '/likes/<int:id>')
 api.add_resource(ThreadIndex, '/threads')
 api.add_resource(MessageIndex, '/messages')
-api.add_resource(MessagesByThread, '/messages/thread/<int:id>')
+api.add_resource(MessagesByThread, '/messages/threads/<int:id>')
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')

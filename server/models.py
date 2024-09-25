@@ -8,7 +8,7 @@ from config import db, bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     
-    serialize_only = ('id', 'username', 'first_name', 'last_name',)
+    serialize_only = ('id', 'username', 'first_name', 'last_name', 'threads_received', 'threads_created')
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
@@ -131,7 +131,7 @@ class Thread(db.Model, SerializerMixin):
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
-    serialize_only = ('id', 'thread_id', 'user_id', 'body', 'thread.thread_creator_id',)
+    serialize_only = ('id', 'thread_id', 'user_id', 'body', 'user.username',)
 
     id = db.Column(db.Integer, primary_key=True)
     thread_id = db.Column(db.Integer, db.ForeignKey('threads.id'))

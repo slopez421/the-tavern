@@ -1,28 +1,24 @@
 import React, { useContext } from "react";
 import PostPreview from "./PostPreview";
-import { useGetPostsQuery } from "../api/apiSlice";
-import { useGetLikesQuery } from "../api/apiSlice";
-import { useAppSelector } from "../../hooks";
-import { UserId } from "../../../App";
+import { PostsContext } from "../../../App";
+import AddPostForm from "./AddPostForm";
 
-function PostsContainer() {
+function PostsContainer({setRefresh}) {
     
-    const {data: posts, isLoading, isSuccess, isError, error} = useGetPostsQuery()
-    const {data: likes} = useGetLikesQuery()
-    const user_likes = likes?.filter((like) => like.user_id === UserId)
+    const posts = useContext(PostsContext)
     let content;
 
-
-    if (isLoading) {
+    if (!posts) {
         content = <span className="loading loading-spinner loading-lg"></span>
-    } else if (isSuccess) {
-        content = posts.map((post) => <PostPreview likes={user_likes} key={post.id} post={post}/>)
-    } else if (isError) {
-        content = <p>{error.message}</p>
+    } else if (posts) {
+        content = posts.map((post) => <PostPreview setRefresh={setRefresh} key={post.id} post={post}/>)
     }
-    return (<div className="flex flex-col-reverse flex-none">
+
+    return (<div>
+        <AddPostForm setRefresh={setRefresh}/>
+        <div className="flex flex-col-reverse">
         {content}
-            </div>);
+            </div></div>);
 }
 
 export default PostsContainer

@@ -1,29 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { userLoggedOut } from "../features/auth/authSlice";
-import { useLogoutMutation } from "../features/api/apiSlice";
-import {logoutReducer, selectCurrentUser} from "../features/users/usersSlice";
 import { FirstNameContext } from "../../App";
 
-function Navbar() {
-  const first_name = useContext(FirstNameContext)
-  const dispatch = useAppDispatch()
+
+function Navbar({setUser}) {
   const navigate = useNavigate()
-  const user = useAppSelector(selectCurrentUser)
-  const [clicked, setClicked] = useState(false)
+  const first_name = useContext(FirstNameContext)
 
   function handleLogout() {
-    fetch("/logout", {
-        method: "DELETE"}).then((r) => {
-            if (r.ok) {
-              dispatch(logoutReducer(null))
-            }
-        })
-    }
+    localStorage.removeItem("token"); 
+    setUser(null)
+    navigate('/login')
+  }
 
-return (
-    <nav className="shadow">
+return ( first_name ? (
+    <nav className="shadow" id="navbar">
       <div className="main-container-fixed">
       <div className="navbar bg-base-100">
         <div className="navbar-start">
@@ -32,12 +23,12 @@ return (
           <div className="navbar-end">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost w-25">
-                <span className="text-sm"> Hi {first_name}!</span>
+                <span className="text-sm"> Hi {first_name ? first_name : <></>}!</span>
               </div>
                 <ul
                   tabIndex={0}
                   className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                  <li><NavLink to="/" end>Homepage</NavLink></li>
+                  <li><NavLink to="/">Homepage</NavLink></li>
                   <li>
                   <div className="join">
                   <div className="join-item">
@@ -52,7 +43,7 @@ return (
                     </div>
                     </div>
                   </li>
-                  <li>Messages</li>
+                  <li><NavLink to="/messages" end>Messages</NavLink></li>
                   <li>Likes</li>
                   <li><button className="btn btn-primary btn-sm" onClick={handleLogout}>Logout</button></li>
                 </ul>
@@ -60,8 +51,8 @@ return (
   </div>
     </div>
     </div>
-
-    </nav>)
+    </nav>
+    ) : <></>)
 }
 
 export default Navbar

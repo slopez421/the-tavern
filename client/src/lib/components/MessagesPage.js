@@ -1,0 +1,28 @@
+import React from "react";
+import ThreadsContainer from "../features/threads/ThreadsContainer";
+
+function MessagesPage({setRefresh}) {
+
+    return (
+        <div className="grid grid-cols-4 w-full mx-10">
+            <div className="col-span-1 mt-20">
+                <ThreadsContainer />
+            </div>
+            <div className="col-span-3 mt-10">
+                <div className="messages-container mt-10">
+                <div className="card mx-20">
+                    <div className="card card-normal bg-ghost text-info items-center">
+                        <div className="card-title mt-40">
+                            <center>
+                            No messages to display.<br />
+                             Select an existing message or create a new one.
+                             </center>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+    </div>)
+}
+
+export default MessagesPage

@@ -1,14 +1,13 @@
-import React from "react";
-import { useGetPostsQuery } from "../features/api/apiSlice";
+import React, { useContext } from "react";
+import { PostsContext } from "../../App";
 
 function SiteStats() {
-    const {data: posts, isLoading, isSuccess, isError, error} = useGetPostsQuery('getPosts')
-
+    const posts = useContext(PostsContext)
     return (
         <div className="stats stats-vertical shadow mt-10">
             <div className="stat">
                 <div className="stat-title">Total Posts on the Board</div>
-                <div className="stat-value">Num</div>
+                <div className="stat-value">{posts.length}</div>
                 <div className="stat-desc">Adventures waiting to be had!</div>
             </div>
         <div className="stat">

@@ -1,14 +1,10 @@
 import React from "react";
 import * as yup from "yup"
 import { useFormik } from "formik";
-import { useLoginMutation } from "../api/apiSlice";
-import { useAppDispatch } from "../../hooks";
-import {loginReducer} from "../users/usersSlice";
 import { useNavigate } from "react-router";
 
 function LoginForm({setShowLogin, setUser}) {
     const navigate = useNavigate()
-    const dispatch = useAppDispatch()
 
     const loginFormSchema = yup.object().shape({
         username: yup.string().required("Username is required to login."),
