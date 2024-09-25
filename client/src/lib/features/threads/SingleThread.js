@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { RefreshContext } from "../../../App";
 import ThreadsContainer from "./ThreadsContainer";
 import MessageBubble from "../messages/MessageBubble";
+import MessageForm from "../messages/MessageForm";
 
 function SingleThread({setRefresh}) {
     const refresh = useContext(RefreshContext)
@@ -19,13 +20,14 @@ function SingleThread({setRefresh}) {
     console.log(messages)
 
     return (
-        <div className="grid grid-cols-4 w-full mx-10">
-            <div className="col-span-1 mt-20">
+        <div className="grid grid-cols-4 w-full">
+            <div className="col-span-1 mt-16">
                 <ThreadsContainer />
             </div>
             <div className="col-span-3 mt-10">
                 <div className="messages-container mt-10">
-                <div className="card mx-20">
+                <div className="flex flex-col-reverse h-full">
+                <div className="card mx-5">
                     { messages.length !== 0 ?
                     (messages.map((message) => <MessageBubble key={message.id} message={message} />)) 
                     : 
@@ -37,8 +39,9 @@ function SingleThread({setRefresh}) {
                          </center>
                     </div>
                 </div>)}
-
                 </div>
+                </div>
+                <MessageForm thread_id={path.id} setRefresh={setRefresh}/>
                 </div>
             </div>
     </div>)

@@ -1,14 +1,14 @@
 import React from "react";
 import ThreadsContainer from "../features/threads/ThreadsContainer";
 
-function MessagesPage({setRefresh}) {
+function MessagesPage() {
 
     return (
-        <div className="grid grid-cols-4 w-full mx-10">
-            <div className="col-span-1 mt-20">
+        <div className="grid grid-cols-4 w-full">
+            <div className="col-span-1 mt-16">
                 <ThreadsContainer />
             </div>
-            <div className="col-span-3 mt-10">
+            <div className="col-span-3 mt-6">
                 <div className="messages-container mt-10">
                 <div className="card mx-20">
                     <div className="card card-normal bg-ghost text-info items-center">

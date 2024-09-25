@@ -16,15 +16,16 @@
   top:0px;
 }
 
+#navbar a.active {
+ background-color: #5e734e;
+ color: white;
+}
+
 .messages-container {
-  margin-left: 2%;
   width: 80%;
-  height: 100%;
   height: 40rem;
   border-left: rgb(204, 219, 207);
   border-left-style: solid;
-  border-bottom: rgb(204, 219, 207);
-  border-bottom-style: solid;
   border-left-width: 2px;
 }
 
@@ -38,10 +39,14 @@
   margin: auto;
 }
 
+#menu a.active {
+  background-color: #5e734e;
+  color: white;
+ }
+
 .threads-menu {
-  width: 15rem;
-  margin-left: 16%;
   height: 10%;
+  width: 100%;
   justify-self: end;
 }
 

@@ -84,10 +84,10 @@ function PostPreview({post, setRefresh}) {
                     <p>Posted by: {user?.username}</p>
                     <h2 className="card-title"><u>{post.title}</u></h2>
                     <p><span className="badge badge-sm badge-primary">Has {post.players_have} {post.players_have === 1 ? "Player": "Players"}</span> | <span className="badge badge-sm badge-error">Needs {post.players_need} {post.players_need === 1 ? "Player": "Players"}</span> | <span className="badge badge-sm badge-info">{post.timezone}</span> | <span className="badge badge-sm badge-warning-content">{ttrpgName(post.ttrpg)}</span></p>
-                    <p>{(post.body).substring(0, 50)}...</p>
+                    <p>{post.body}</p>
                    <div className="card-actions">
                        <div className="dropdown dropdown-hover dropdown-top"> 
-                           <button className="btn btn-sm" onClick={handleDelete}>
+                           <button className="btn btn-sm bg-primary-content" onClick={handleDelete}>
                                <svg
                                    xmlns="http://www.w3.org/2000/svg"
                                    className="h-6 w-6"

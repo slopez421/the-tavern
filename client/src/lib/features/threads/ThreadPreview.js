@@ -13,7 +13,7 @@ function ThreadPreview({thread}) {
     }
 
     return (<>
-        <div className="btn btn-ghost w-full hover:text-primary-content hover:bg-info">
+        <div className="btn btn-ghost btn-square w-full hover:text-primary-content hover:bg-info">
             <Link to={`/messages/threads/${thread.id}`}>{displayName}</Link>
             </div>
             <div className="divider divider-success"></div>
