@@ -24,7 +24,7 @@
 
 .messages-container {
   width: 80%;
-  height: 56rem;
+  height: 50rem;
   border-left: rgb(204, 219, 207);
   border-left-style: solid;
   border-left-width: 2px;
@@ -41,6 +41,8 @@
 .account-update-container {
   height: 56rem;
   margin-left: 17rem;
+  width: 50%;
+
 }
 
 .main-container {

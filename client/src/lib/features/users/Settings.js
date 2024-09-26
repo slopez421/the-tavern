@@ -31,7 +31,7 @@ function Settings({setRefresh, setUser}) {
                         <div className="table">
             {updating ? 
             <UpdateAccountForm setUpdating={setUpdating} firstname={firstname} lastname={lastname} username={username} user_id={user_id} setRefresh={setRefresh} setUser={setUser}/> 
-            :  <table className="table table-lg">
+            :  <table className="table table-lg mx-10">
             <thead>
                <tr className="text-info">
                     <th>First Name</th>

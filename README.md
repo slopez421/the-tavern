@@ -1,357 +1,102 @@
-# Phase 4 Full-Stack Application Project Template
-
-## Learning Goals
-
-- Discuss the basic directory structure of a full-stack Flask/React application.
-- Carry out the first steps in creating your Phase 4 project.
-
----
-
-## Introduction
-
-Fork and clone this lesson for a template for your full-stack application. Take
-a look at the directory structure before we begin (NOTE: node_modules will be
-generated in a subsequent step):
+The Tavern
+As an avid fan of TTRPG games, one of the most common and frustrating issues I find myself encountering is actually being able to play with other people. There are many online communities available to discuss games or play test new editions, but there is a struggle felt among all players in actually putting together a table to play. With apps like Discord and Zoom, there are certainly tools out there capable of hosting an online TTRPG party/server, but not as many tools dedicated to finding players for those servers.
 
-```console
-$ tree -L 2
-$ # the -L argument limits the depth at which we look into the directory structure
-.
-├── CONTRIBUTING.md
-├── LICENSE.md
-├── Pipfile
-├── README.md
-├── client
-│   ├── README.md
-│   ├── package.json
-│   ├── public
-│   └── src
-└── server
-    ├── app.py
-    ├── config.py
-    ├── models.py
-    └── seed.py
-```
+The Tavern seeks to provide that solution.
 
-A `migrations` folder will be added to the `server` directory in a later step.
+Frontend
+Created with a React frontend and a Flask-API backend, The Tavern has a navigation bar with three client-side routes leading to the user’s Account page, the Homepage, and My Posts, a page where users can track all the posts they have created.
 
-The `client` folder contains a basic React application, while the `server`
-folder contains a basic Flask application. You will adapt both folders to
-implement the code for your project .
+Before the user can see any of this, they are first greeted with a Login form that takes in a username and password and checks for a match in the database. If there is a match, the user is then logged in and their user id from the database is assigned to their session cookie, a special cookie imported by Flask. These form fields are validated by Yup to ensure the fields cannot be left empty. If there is no match for username and password, the server sends a message that is displayed on the login form to the user, informing them there has been an error and either the username or password is incorrect. If the user is new, they may also click the ‘Don’t have an account?’ button that will replace the Login form with a Signup form instead. These fields are also validated through Yup and ensure the user cannot sign up with a username that already exists in the database. Once a user signs up successfully, they are logged in automatically and are then redirected to the homepage with the navbar at the very top.
 
-NOTE: If you did not previously install `tree` in your environment setup, MacOS
-users can install this with the command `brew install tree`. WSL and Linux users
-can run `sudo apt-get install tree` to download it as well.
+On the far right side of the navbar, there is a logout button that will send a fetch() delete request to the database to set the user’s session[‘user_id’] cookie to None, which will effectively log out the user.
 
-## Where Do I Start?
+Most of the activity lives on the Homepage of The Tavern.
 
-Just as with your Phase 3 Project, this will likely be one of the biggest
-projects you've undertaken so far. Your first task should be creating a Git
-repository to keep track of your work and roll back any undesired changes.
+Homepage
+Here, users will see the Adventuring Board, a welcome message, and an index of all posts submitted by all users.
 
-### Removing Existing Git Configuration
+The Adventuring Board is a form with four input fields where users must supply a title for their post, a description of their campaign so other users have an understanding of what environment they will be playing in, how many players are currently in the campaign, and how many more players they are seeking to join their campaign. This form is validated on the front end using the yup library and controlled through the Formik library’s {useFormik} hook. The yup library ensures the form cannot be submitted without a value in each input, with the first two being strings and the bottom two being integers. Each submission sends a fetch “post” request to the database and returns a response; if that response is successful, then state is updated to ‘refresh’ the page and display the new set of posts, with the most recent appearing in the top row.
 
-If you're using this template, start off by removing the existing metadata for
-Github and Canvas. Run the following command to carry this out:
+The welcome message introduces users to the app with a playful blurb and a statistical count of the current “Adventures” (posts) in the database.
 
-```console
-$ rm -rf .git .canvas
-```
+Below the welcome message are the “adventures waiting”. Every post submitted appears in this section and is rendered with a ListingCard to display the information supplied by the form. Users can comment on each post and see posts left by other users. Comments live in a collapsible box to reduce space taking up screen design. The text input for a comment is also controlled through Formik and validated with Yup to ensure no empty strings are submitted. Similar to the Adventuring Board form, a comment submission sends a fetch() “POST” request to the database, and if the response is successful, a re-render is triggered by updating state to refresh the page.
 
-The `rm` command removes files from your computer's memory. The `-r` flag tells
-the console to remove _recursively_, which allows the command to remove
-directories and the files within them. `-f` removes them permanently.
+MyPosts
+This route displays the user’s own posts and associated comments. The user’s own posts are held in state that updates with every new post.
 
-`.git` contains this directory's configuration to track changes and push to
-Github (you want to track and push _your own_ changes instead), and `.canvas`
-contains the metadata to create a Canvas page from your Git repo. You don't have
-the permissions to edit our Canvas course, so it's not worth keeping around.
+My Account
+This route displays the user’s account details on a red card, specifically the user’s name and username. If the user wishes to update their details, they can click the “Edit Account” button and a form will replace the card content. This form is validated through Yup to ensure the fields can be submitted while empty. If the user wishes to update their username, they cannot choose one that is currently assigned to another user. If they try, an error message will display, preventing them from doing so. All usernames must be unique.
 
-### Creating Your Own Git Repo
+Backend
+Config
+The config file instantiates most of the imports and configurations to avoid circular import issues from occurring later on.
 
-First things first- rename this directory! Once you have an idea for a name,
-move one level up with `cd ..` and run
-`mv python-p4-project-template <new-directory-name>` to change its name (replace
-<new-directory-name> with an appropriate project directory name).
+We instantiate the app with Flask and set attributes to turn off modification tracking. We instantiate our database with SQLAlchemy.
 
-> **Note: If you typed the `mv` command in a terminal within VS Code, you should
-> close VS Code then reopen it.**
+Flask-RESTful's Api is initialized with our application instance and populates with resources later in App.py. These resources inherit from the Resource class.
 
-> **Note: `mv` actually stands for "move", but your computer interprets this
-> rename as a move from a directory with the old name to a directory with a new
-> name.**
+We add these resources to our Api instance with add_resource(). Each resource uses the defined HTTP verb instance methods (such as def get(), def post(), def delete(), def update(), etc.) to determine which routes to create at the URL provided.
 
-`cd` back into your new directory and run `git init` to create a local git
-repository. Add all of your local files to version control with `git add --all`,
-then commit them with `git commit -m'initial commit'`. (You can change the
-message here- this one is just a common choice.)
+Models
+In the models folder, we have our three database models, User, Comment, and Listing. For reference, Listing refers to a Post on the client side.
 
-Navigate to [GitHub](https://github.com). In the upper-right corner of the page,
-click on the "+" dropdown menu, then select "New repository". Enter the name of
-your local repo, choose whether you would like it to be public or private, make
-sure "Initialize this repository with a README" is unchecked (you already have
-one), then click "Create repository".
+All three classes inherit from db.Model and SQLAlchemy’s extension SerializerMixin, which allows for set rules on serialization so the models do not run into infinite recursion depth while serializing our objects.
 
-Head back to the command line and enter
-`git remote add origin git@github.com:github-username/new-repository-name.git`.
-NOTE: Replace `github-username` with your github username, and
-`new-repository-name` with the name of your new repository. This command will
-map the remote repository to your local repository. Finally, push your first
-commit with `git push -u origin main`.
-
-Your project is now version-controlled locally and online. This will allow you
-to create different versions of your project and pick up your work on a
-different machine if the need arises.
+Because the app will set up user authentication and password protection, bcrypt has been imported for use.
 
----
+User
+The User model has a corresponding table named ‘users’ and five attributes assigned to the Column type: id (the primary key), username, _password_hash, first_name, and last_name.
 
-## Setup
+Database constraints are put on the columns so null values are not saved and the username is unique, which ensures two identical usernames cannot exist at the same time.
 
-### `server/`
+A hashed version of the user’s password is saved to the database instead of the password itself for security purposes. When a new user is created, the @password_hash.setter function takes in the password and bcrypt both salts and hashes the password before saving the hashed password.
 
-The `server/` directory contains all of your backend code.
+When a user logs in, their password is run through the authenticate method, which takes in the password and runs it through Bcrypt along with the salt. If there is a match, the user is logged in.
 
-`app.py` is your Flask application. You'll want to use Flask to build a simple
-API backend like we have in previous modules. You should use Flask-RESTful for
-your routes. You should be familiar with `models.py` and `seed.py` by now, but
-remember that you will need to use Flask-SQLAlchemy, Flask-Migrate, and
-SQLAlchemy-Serializer instead of SQLAlchemy and Alembic in your models.
+Listing
+The Listing model has a corresponding table named ‘listings’ and six attributes assigned to the Column type: id (the primary key), title, body, players_needed, players_have, and the user_id (the foreign key relating to which user id this listing belongs to.)
 
-The project contains a default `Pipfile` with some basic dependencies. You may
-adapt the `Pipfile` if there are additional dependencies you want to add for
-your project.
+Database constraints are placed on the integer-based columns, players_have and players_need.
 
-To download the dependencies for the backend server, run:
+Either of these attributes must be less than or equal to 6; else, there is an AttributeError raised. This is done with the knowledge in mind that most TTRPG tables rarely have more than six players seated. However, it is still possible and in those rare cases, the exception is allowed that a Listing can have x amount of players and seek x more.
 
-```console
-pipenv install
-pipenv shell
-```
+Comment
+The Comment model has a corresponding table named ‘comments’ and four attributes assigned to the Column type: id (the primary key), body, user_id (the foreign key relating to which user id this comment belongs to), and listing_id (the foreign key relating to which listing id this comment belongs to).
 
-You can run your Flask API on [`localhost:5555`](http://localhost:5555) by
-running:
+The body attribute sets nullable to False, meaning null values cannot be stored. The body attribute is also the only attribute a user inputs.
 
-```console
-python server/app.py
-```
+Like
+The Like model is an association model that takes in one user-submittable attribute, the color of the heart, and has two foreign keys/relationships to User and Listing.
 
-Check that your server serves the default route `http://localhost:5555`. You
-should see a web page with the heading "Project Server".
+App.py
+After importing our models,app, db, api, Resource, request, and session, we set up our views in App.py. All views in this file inherit from the aforementioned Resource class so we can set up routes at the bottom of the file.
 
-### `client/`
+CheckSession only allows a get() request and is used to check if the current session has a ‘user_id’ cookie assigned to the session. If there is not one, an error message is returned instead with a 401 unauthorized code. If there is a ‘user_id’, the database queries a search through the User table for a User whose id matches the session[‘user_id’] value. Once a match is found, the user’s row is returned serialized with the to_dict() method and a 200 success code.
 
-The `client/` directory contains all of your frontend code. The file
-`package.json` has been configured with common React application dependencies,
-include `react-router-dom`. The file also sets the `proxy` field to forward
-requests to `"http://localhost:5555". Feel free to change this to another port-
-just remember to configure your Flask app to use another port as well!
+ListingIndex The get() method returns a query that joins the Listing table with the User table. All listings are returned in an array as serialized objects. The reason this is done with a join table instead of simply returning a query of Listings is to connect the User_id to Listing.user_id so our query can also return the listing’s associated username, which lives in the User table.
 
-To download the dependencies for the frontend client, run:
+The post() method takes in the values provided by request.get_json(), the form values provided from the client side, and attempts to create a new Listing object. If it is successful, the new listing is added to the database and returned as an object with the to_dict() method and the 201 created status code. If it is unsuccessful, an error message is returned instead with the 422 code (unsuccessful request due to invalid data.)
 
-```console
-npm install --prefix client
-```
+ListingsById only accepts a get() request as well. The user_id is pulled from the current ‘user_id’ stored in the session. The database returns an array of listings whose user_id matches the user_id of the current logged-in user. This is what is displayed on the MyPosts page on the client side.
 
-You can run your React app on [`localhost:3000`](http://localhost:3000) by
-running:
+Signup only accepts a post() request since it is designed to create a new user. Signup looks for the values provided by request.get_json() and attempts to create a new User object. Here, it is taking the password provided and assigning it to the password_hash, beginning the process of hashing and salting the password first before it is saved. The original password is never saved in this process.
 
-```sh
-npm start --prefix client
-```
+If the fields were filled out correctly and the constraints/validations pass, then the user is added to the database and automatically logged in. By assigning the new user’s id to session[‘user_id’], the user is auto-logged in. If the database fails to add the user for any reason, an error message is returned instead with the 422 code (unsuccessful request due to invalid data).
 
-Check that your the React client displays a default page
-`http://localhost:3000`. You should see a web page with the heading "Project
-Client".
+Login also only accepts a post() request. After receiving a username and password from the request, the database searches for a User whose username matches the username provided. If there is a match, the password is then run through the user.authenticate() method. If there is a match here too, and only if there is a password match, then the user’s id is assigned to the session and the user is auto-logged in. The User object is then returned serialized with the to_dict() method and a 200 success code. If there is no match (either with the username or with the password), an error message is returned with a 401 unauthorized code.
 
-## Generating Your Database
-
-NOTE: The initial project directory structure does not contain the `instance` or
-`migrations` folders. Change into the `server` directory:
-
-```console
-cd server
-```
+Logout only accepts a delete() request and assigns a value of None to the session[‘user_id’], which in turn will log the user out due to CheckSession being called again. An empty object is then returned with a 204 successfully processed code. 204 is used instead of 200 because there is no context to return, whereas 200 would usually imply a successful request with additional content supplied (such as retrieving information and returning that information).
 
-Then enter the commands to create the `instance` and `migrations` folders and
-the database `app.db` file:
+Comments accepts a post() request that takes in a body value, the user_id, and the listing_id which is provided by the client-side form. The user only has to supply the body (or the “comment” itself). If a new Comment object is successfully created, then that instance is saved/mapped to the database table and returned serialized with a 201 successful post code. If it is not successfully created, then it is not saved to the database and instead, an error message is returned with a 422 code (unsuccessful request due to invalid data).
 
-```
-flask db init
-flask db upgrade head
-```
+Likes accepts a post() request that takes in the heart color provided by the user's selection, the user_id passed in from the User currently logged into a session, and the listing_id that is obtained from the Listing this Like exists on. A successful like is returned and state is updated on the React side to display this like. Likes also accepts a delete() request that takes in the id of the current Like and deletes it from the database. State is then called again on the React side to delete the heart_color and display the heart options for the user.
 
-Type `tree -L 2` within the `server` folder to confirm the new directory
-structure:
+At the bottom of the file, there are resources added for each relevant path. add_resource() takes in two arguments: the Resource itself (the class name) and the URL path that the client side will be fetching to.
 
-```console
-.
-├── app.py
-├── config.py
-├── instance
-│   └── app.db
-├── migrations
-│   ├── README
-│   ├── __pycache__
-│   ├── alembic.ini
-│   ├── env.py
-│   ├── script.py.mako
-│   └── versions
-├── models.py
-└── seed.py
-```
+Seed.py
+The seed file provides randomized Users, Listings and Comments. The faker library is imported for use here as well as bcrypt to ensure the password hash is working for our seed data as well.
 
-Edit `models.py` and start creating your models. Import your models as needed in
-other modules, i.e. `from models import ...`.
-
-Remember to regularly run
-`flask db revision --autogenerate -m'<descriptive message>'`, replacing
-`<descriptive message>` with an appropriate message, and `flask db upgrade head`
-to track your modifications to the database and create checkpoints in case you
-ever need to roll those modifications back.
-
-> **Tip: It's always a good idea to start with an empty revision! This allows
-> you to roll all the way back while still holding onto your database. You can
-> create this empty revision with `flask db revision -m'Create DB'`.**
-
-If you want to seed your database, now would be a great time to write out your
-`seed.py` script and run it to generate some test data. Faker has been included
-in the Pipfile if you'd like to use that library.
-
----
-
-#### `config.py`
-
-When developing a large Python application, you might run into a common issue:
-_circular imports_. A circular import occurs when two modules import from one
-another, such as `app.py` and `models.py`. When you create a circular import and
-attempt to run your app, you'll see the following error:
-
-```console
-ImportError: cannot import name
-```
-
-If you're going to need an object in multiple modules like `app` or `db`,
-creating a _third_ module to instantiate these objects can save you a great deal
-of circular grief. Here's a good start to a Flask config file (you may need more
-if you intend to include features like authentication and passwords):
-
-```py
-# Standard library imports
-
-# Remote library imports
-from flask import Flask
-from flask_cors import CORS
-from flask_migrate import Migrate
-from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
-
-# Local imports
-
-# Instantiate app, set attributes
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.json.compact = False
-
-# Define metadata, instantiate db
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
-db = SQLAlchemy(metadata=metadata)
-migrate = Migrate(app, db)
-db.init_app(app)
-
-# Instantiate REST API
-api = Api(app)
-
-# Instantiate CORS
-CORS(app)
-
-```
-
-Now let's review that last line...
-
-#### CORS
-
-CORS (Cross-Origin Resource Sharing) is a system that uses HTTP headers to
-determine whether resources from different servers-of-origin can be accessed. If
-you're using the fetch API to connect your frontend to your Flask backend, you
-need to configure CORS on your Flask application instance. Lucky for us, that
-only takes one line:
-
-```py
-CORS(app)
-
-```
-
-By default, Flask-CORS enables CORS on all routes in your application with all
-fetching servers. You can also specify the resources that allow CORS. The
-following specifies that routes beginning with `api/` allow CORS from any
-originating server:
-
-```py
-CORS(app, resources={r"/api/*": {"origins": "*"}})
-
-```
-
-You can also set this up resource-by-resource by importing and using the
-`@cross_origin` decorator:
-
-```py
-@app.route("/")
-@cross_origin()
-def howdy():
-  return "Howdy partner!"
-
-```
-
----
-
-## Updating Your README.md
-
-`README.md` is a Markdown file that describes your project. These files can be
-used in many different ways- you may have noticed that we use them to generate
-entire Canvas lessons- but they're most commonly used as homepages for online
-Git repositories. **When you develop something that you want other people to
-use, you need to have a README.**
-
-Markdown is not a language that we cover in Flatiron's Software Engineering
-curriculum, but it's not a particularly difficult language to learn (if you've
-ever left a comment on Reddit, you might already know the basics). Refer to the
-cheat sheet in this lesson's resources for a basic guide to Markdown.
-
-### What Goes into a README?
-
-This README should serve as a template for your own- go through the important
-files in your project and describe what they do. Each file that you edit (you
-can ignore your migration files) should get at least a paragraph. Each function
-should get a small blurb.
-
-You should descibe your application first, and with a good level of detail. The
-rest should be ordered by importance to the user. (Probably routes next, then
-models.)
-
-Screenshots and links to resources that you used throughout are also useful to
-users and collaborators, but a little more syntactically complicated. Only add
-these in if you're feeling comfortable with Markdown.
-
----
-
-## Conclusion
-
-A lot of work goes into a full-stack application, but it all relies on concepts
-that you've practiced thoroughly throughout this phase. Hopefully this template
-and guide will get you off to a good start with your Phase 4 Project.
-
-Happy coding!
-
----
-
-## Resources
-
-- [Setting up a respository - Atlassian](https://www.atlassian.com/git/tutorials/setting-up-a-repository)
-- [Create a repo- GitHub Docs](https://docs.github.com/en/get-started/quickstart/create-a-repo)
-- [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
-- [Python Circular Imports - StackAbuse](https://stackabuse.com/python-circular-imports/)
-- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/)
+Credits
+Client side: 
+[Tailwind CSS](https://tailwindcss.com/docs/installation) 
+[daisyUI](https://daisyui.com/docs/install/)

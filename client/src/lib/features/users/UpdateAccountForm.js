@@ -71,8 +71,10 @@ function UpdateAccountForm({firstname, lastname, username, user_id, setUpdating,
     </tr>
     </tbody>
    </table>
-   <button className="btn btn-sm" type="submit">Update Account</button>
-    <button className="btn btn-sm" onClick={() => setUpdating(false)}>Cancel</button>
+   <div className="card-actions justify-end mt-2">
+   <button className="btn btn-sm bg-success hover:bg-warning" type="submit">Update Account</button>
+    <button className="btn btn-sm bg-success hover:bg-warning" onClick={() => setUpdating(false)}>Cancel</button>
+    </div>
    </form>)
 }
 
