@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useResolvedPath } from "react-router";
+import { useParams } from "react-router";
 import { useContext } from "react";
 import { RefreshContext } from "../../../App";
 import ThreadsContainer from "./ThreadsContainer";
@@ -11,20 +11,18 @@ function SingleThread({setRefresh}) {
     const [messages, setMessages] = useState([])
     const path = useParams()
 
-    console.log(path.id)
     useEffect(() => {
         fetch(`/messages/threads/${path.id}`)
         .then((r) => r.json())
         .then((thread) => setMessages(thread))
-    }, [refresh]);
-    console.log(messages)
+    }, [path.id, refresh]);
 
     return (
         <div className="grid grid-cols-4 w-full">
             <div className="col-span-1 mt-16">
                 <ThreadsContainer />
             </div>
-            <div className="col-span-3 mt-10">
+            <div className="col-span-3 mt-6">
                 <div className="messages-container mt-10">
                 <div className="flex flex-col-reverse h-full">
                 <div className="card mx-5">

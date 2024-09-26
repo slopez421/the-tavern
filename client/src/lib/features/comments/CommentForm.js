@@ -32,6 +32,8 @@ const commentFormik = useFormik({
     ).then((res) => {
             if (res.ok) {
                 setRefresh();
+            } else {
+                res.json().then((error) => alert(error.error))
             }
             });
         },

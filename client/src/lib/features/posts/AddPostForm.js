@@ -24,7 +24,6 @@ const postFormSchema = yup.object().shape({
 
 const postFormik = useFormik({
     initialValues: {
-        
         title: "",
         body: "",
         preferred_weekday: "",
@@ -49,11 +48,13 @@ const postFormik = useFormik({
             if (res.ok) {
                 postFormik.resetForm()
                setRefresh()
+            } else {
+                res.json().then((error) => alert(error.error))
             }
             });
         },
     });
-    
+
     return (userid ? <div className="card-compact bg-base-100 shadow-xl max-w-lg mt-10 mx-2 rounded-box">
         <form className="card-body" onSubmit={postFormik.handleSubmit}>
             <p className="card-title text-primary justify-center">Adventuring Board</p><br />

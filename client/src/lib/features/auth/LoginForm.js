@@ -27,11 +27,10 @@ function LoginForm({setShowLogin, setUser}) {
                 if (res.ok) {
                     res.json().then((user) => 
                         {   
-                            console.log(setUser)
                             setUser(user);
                         });
                 } else {
-                  res.json().then((error) => {console.log(error)})
+                    res.json().then((error) => alert(error.error))
                 }
                 });
             },
@@ -40,7 +39,7 @@ function LoginForm({setShowLogin, setUser}) {
     return <div className="card bg-base-100 w-96 max-w-sm shrink-0 shadow-2xl">
         <form className="card-body" onSubmit={loginFormik.handleSubmit}>
         <div className="card-title justify-center">Welcome Back to The Tavern!</div><br />
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered input-success flex items-center gap-2">
             <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -52,7 +51,7 @@ function LoginForm({setShowLogin, setUser}) {
         <input type="text" className="grow" placeholder="Username" id="username" name="username" onChange={loginFormik.handleChange} value={loginFormik.values.username}/>
         </label>
         <p style={{ color: "red" }}>{loginFormik.errors.username}</p>
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered input-success flex items-center gap-2">
             <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -65,8 +64,9 @@ function LoginForm({setShowLogin, setUser}) {
             </svg>
             <input type="password" className="grow" placeholder="Password" id="password" name="password" onChange={loginFormik.handleChange} value={loginFormik.values.password}/>
             </label>
-            <button className="btn btn-primary" type="submit">Login</button>
-            <button className="btn btn-primary" onClick={() => {setShowLogin(false)}}>Don't have an account?</button>
+            <p style={{ color: "red" }}>{loginFormik.errors.password}</p>
+            <button className="btn btn-success" type="submit">Login</button>
+            <button className="btn btn-success" onClick={() => {setShowLogin(false)}}>Don't have an account?</button>
         </form>
     </div>
 }

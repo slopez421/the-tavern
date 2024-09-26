@@ -31,8 +31,11 @@ function PostPreview({post, setRefresh}) {
             case "pathfinder":
                 ttrpg = "Pathfinder";
                 break;
+            case "vtm":
+                ttrpg = "Vampire: The Masquerade";
+                break;
                 default:
-                    ttrpg = ""
+                    ttrpg = "Dungeons and Dragons"
                 break; 
         }
         return ttrpg

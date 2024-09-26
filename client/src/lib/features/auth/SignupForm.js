@@ -2,7 +2,7 @@ import React from "react";
 import * as yup from "yup"
 import { useFormik } from "formik";
 
-function SignUpForm({setShowLogin}) {
+function SignUpForm({setShowLogin, setUser}) {
 
     const signupFormSchema = yup.object().shape({
         first_name: yup.string().required("First name is required to sign up."),
@@ -21,14 +21,29 @@ function SignUpForm({setShowLogin}) {
       
         validationSchema : signupFormSchema,
         onSubmit: (values) => {
-            console.log(values)
-        }
+            fetch("/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            }).then((res) => {
+                if (res.ok) {
+                    res.json().then((user) => 
+                        {   setUser(user)
+                        }
+                );
+                } else {
+                    res.json().then((error) => alert(error.error))
+                }
+                });
+            },
         });
 
     return <div className="card bg-base-100 w-96 max-w-sm shrink-0 shadow-2xl">
         <form className="card-body" onSubmit={signupForm.handleSubmit}>
         <div className="card-title justify-center">Welcome to The Tavern!</div><br />
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered input-success flex items-center gap-2">
             <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -40,7 +55,7 @@ function SignUpForm({setShowLogin}) {
         <input type="text" className="grow" placeholder="First Name" id="first_name" name="first_name" onChange={signupForm.handleChange} value={signupForm.values.first_name}/>
         </label>
         <p style={{ color: "red" }}>{signupForm.errors.first_name}</p>
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered input-success flex items-center gap-2">
             <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -52,7 +67,7 @@ function SignUpForm({setShowLogin}) {
         <input type="text" className="grow" placeholder="Last Name" id="last_name" name="last_name" onChange={signupForm.handleChange} value={signupForm.values.last_name}/>
         </label>
         <p style={{ color: "red" }}>{signupForm.errors.last_name}</p>
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered input-success flex items-center gap-2">
             <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -64,7 +79,7 @@ function SignUpForm({setShowLogin}) {
         <input type="text" className="grow" placeholder="Username" id="username" name="username" onChange={signupForm.handleChange} value={signupForm.values.username}/>
         </label>
         <p style={{ color: "red" }}>{signupForm.errors.username}</p>
-        <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered input-success flex items-center gap-2">
             <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -78,8 +93,8 @@ function SignUpForm({setShowLogin}) {
             <input type="password" placeholder="Password" className="grow" id="password" name="password" onChange={signupForm.handleChange} value={signupForm.values.password} />
             </label>
             <p style={{ color: "red" }}> {signupForm.errors.password}</p>
-            <button className="btn btn-primary" type="submit">Signup</button>
-            <button className="btn btn-primary" onClick={() => {setShowLogin(true)}}>Login</button>
+            <button className="btn btn-success" type="submit">Signup</button>
+            <button className="btn btn-success" onClick={() => {setShowLogin(true)}}>Login</button>
         </form>
     </div>
 }

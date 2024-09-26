@@ -86,7 +86,10 @@ class UserById(Resource):
             db.session.add(user)
             db.session.commit()
 
-            return user.to_dict(), 201
+            additional_claims = {"username": user.username, "first_name": user.first_name, "last_name": user.last_name, "id" : user.id}
+            access_token = create_access_token(identity=user.id, additional_claims=additional_claims)
+            return access_token, 201
+        
         except:
             return {'error': 'Error updating user.'}, 422
 
@@ -108,8 +111,9 @@ class Signup(Resource):
         try:
             db.session.add(user)
             db.session.commit()
-            session['user_id'] = user.id
-            return user.to_dict(), 201
+            additional_claims = {"username": user.username, "first_name": user.first_name, "last_name": user.last_name, "id" : user.id}
+            access_token = create_access_token(identity=user.id, additional_claims=additional_claims)
+            return access_token, 201
         except:
             return {'error': 'Failed to successfully sign up.'}, 422
         
