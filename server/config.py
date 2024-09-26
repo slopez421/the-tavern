@@ -10,9 +10,7 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 
-# Local imports
 
-# Instantiate app, set attributes
 app = Flask(__name__)
 app.secret_key= b'\x19\xa2wh\xc1\xb5\x8d\x15\x05\x8b\xdf\xa4r\xa8\xae\\'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -24,7 +22,6 @@ jwt = JWTManager(app)
 
 
 
-# Define metadata, instantiate db
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 })
