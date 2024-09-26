@@ -20,7 +20,6 @@ const commentFormik = useFormik({
 
     validationSchema : commentFormSchema,
     onSubmit: (values) => {
-        console.log(values)
         commentFormik.resetForm({body: ""})
         fetch("/comments", {
             method: "POST",

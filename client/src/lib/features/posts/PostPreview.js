@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
+import { FaDiceD20 } from "react-icons/fa";
 import { useFormik } from "formik";
 import LikesForm from "../likes/LikesForm";
-import { UserIdContext } from "../../../App";
+import { RefreshContext, UserIdContext } from "../../../App";
 import Comment from "../comments/Comment";
 import CommentForm from "../comments/CommentForm";
-import { RefreshContext } from "../../../App";
+
 
 function PostPreview({post, setRefresh}) {
     const user = post.user
@@ -48,7 +49,6 @@ function PostPreview({post, setRefresh}) {
             post_id: post.id,
         },
         onSubmit: (values) => {
-        formik.resetForm();
         fetch("/likes", {
                 method: "POST",
                 headers: {
@@ -56,28 +56,29 @@ function PostPreview({post, setRefresh}) {
                 },
                 body: JSON.stringify(values),
             }
-        ).then((res) => {
-                if (res.ok) {
-                    setRefresh(!refresh)
-                }
-                });
+        ).then((r) => {
+                if (r.ok) {
+                    formik.resetForm();
+                    setRefresh(!refresh);
+            } else {
+                r.json().then((error) => alert(error.error))
+            }
+        });
         }
     })
 
     function handleDelete() {
         matched_like ?
-        fetch(`/likes/${matched_like.id}`, {
+        fetch(`/likes/${matched_like?.id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(matched_like.id)
             }).then((r) => {
-                if (r.status === 204) {
-                    setRefresh()
-                }
-            }) :
-            <></>
+                if (r.ok) {
+                setRefresh(!refresh)}
+            }) : setRefresh()
         }
 
     return(
@@ -89,20 +90,9 @@ function PostPreview({post, setRefresh}) {
                     <p><span className="badge badge-sm badge-primary">Has {post.players_have} {post.players_have === 1 ? "Player": "Players"}</span> | <span className="badge badge-sm badge-error">Needs {post.players_need} {post.players_need === 1 ? "Player": "Players"}</span> | <span className="badge badge-sm badge-info">{post.timezone}</span> | <span className="badge badge-sm badge-warning-content">{ttrpgName(post.ttrpg)}</span></p>
                     <p>{post.body}</p>
                    <div className="card-actions">
-                       <div className="dropdown dropdown-hover dropdown-top"> 
-                           <button className="btn btn-sm bg-primary-content" onClick={handleDelete}>
-                               <svg
-                                   xmlns="http://www.w3.org/2000/svg"
-                                   className="h-6 w-6"
-                                   fill={matched_like ? matched_like.heart_color : formik.values.heart_color}
-                                   viewBox="0 0 24 24"
-                                   stroke={matched_like ? matched_like.heart_color : "currentColor"}>
-                                   <path
-                                       strokeLinecap="round"
-                                       strokeLinejoin="round"
-                                       strokeWidth="2"
-                                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                               </svg>
+                       <div className="dropdown dropdown-hover dropdown-right"> 
+                           <button className="btn btn-md bg-primary-content" onClick={() => handleDelete()}>
+                           <FaDiceD20 className="h-6 w-6" color={matched_like ? matched_like.heart_color : "grey"}/>                        
                            </button>
                            {matched_like ? "" : 
                             <LikesForm formik={formik}/>
