@@ -6,7 +6,7 @@ The Tavern seeks to provide that solution.
 
 In the first version, I briged the gap between users with the post system, but the dilemma remained for individual communications. In version 2.0, The Tavern introduces a messaging system and expands on the ability to sort posts with categories.
 
-###Frontend
+### Frontend
 
 Created with a React frontend and a Flask-API backend, The Tavern has a navigation bar with three client-side routes leading to the user’s Account page, the Homepage, and My Posts, a page where users can track all the posts they have created.
 
